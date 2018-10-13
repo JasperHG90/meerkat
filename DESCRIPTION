@@ -1,0 +1,11 @@
+Package: meerkat
+Type: Package
+Title: Assignment 2
+Version: 0.1.0
+Author: Jasper Ginn
+Maintainer: Jasper Ginn <jasperginn@gmail.com>
+Description: Assignment 2 for Computational Inference with 
+    R @ Utrecht University
+License: MIT
+Encoding: UTF-8
+LazyData: true
