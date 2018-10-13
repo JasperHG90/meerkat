@@ -1,0 +1,12 @@
+---
+title: "Assignment 2"
+author: "Jasper Ginn"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{assignment2}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Part I
