@@ -91,7 +91,8 @@ CSFI &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">2<
 TFI &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">7</span>,<span class="dv">7</span>,<span class="dv">8</span>)
 
 <span class="co"># Calculate t-test</span>
-meerkat<span class="op">::</span><span class="kw">t_test</span>(CSFI, TFI)</code></pre></div>
+tt1 &lt;-<span class="st"> </span>meerkat<span class="op">::</span><span class="kw">t_test</span>(CSFI, TFI, <span class="dt">variance_equal =</span> <span class="ot">TRUE</span>, <span class="dt">boostrap_ssize =</span> <span class="fl">0.2</span>)
+tt1</code></pre></div>
 <pre><code>## Two-sided t-test with equal variances.
 ## 
 ## Summary stats:
@@ -103,7 +104,11 @@ meerkat<span class="op">::</span><span class="kw">t_test</span>(CSFI, TFI)</code
 ## Pooled variance: 5.68
 ## 
 ## t-statistic  df  p-value 
-## 1.68     16  0.112</code></pre>
+## 1.68     16  0.112
+## 
+## Bootstrapped 95% CI:
+## Lower    Upper
+## -0.83    4.94</code></pre>
 <p>The results indicate that there is no statistically different performance between pilots who use traditional flight instructions and pilots who are trained using computer-simulated flight instruction.</p>
 <p>When we compare this to the built-in R function, we get:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">t.test</span>(CSFI, TFI, <span class="dt">var.equal =</span> <span class="ot">TRUE</span>)</code></pre></div>

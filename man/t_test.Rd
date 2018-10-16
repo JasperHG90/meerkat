@@ -4,7 +4,7 @@
 \alias{t_test}
 \title{Perform a two-tailed t-test between two variables}
 \usage{
-t_test(x, y, variance_equal = TRUE)
+t_test(x, y, variance_equal = TRUE, ...)
 }
 \arguments{
 \item{x}{a numeric vector}
@@ -12,6 +12,12 @@ t_test(x, y, variance_equal = TRUE)
 \item{y}{a numeric vector}
 
 \item{variance_equal}{boolean (TRUE/FALSE) indicating if variance of x and y are equal or not. If variances are equal, the function will calculate the pooled variance. Else, it will use the formula for unequal variances.}
+
+\item{...}{optional named arguments. You may pass the following arguments:
+\itemize{
+  \item{R: }{integer indicating the number of bootstrap samples used to estimate the confidence intervals. Defaults to 1.000.}
+  \item{boostrap_ssize: }{float between 0 and 1 exclusive indicating the sample size to be used for the bootstrap samples. A value of 1 means that you use the entire sample. A value of 0 means that you use no observations. Defaults to 0.5}
+}}
 }
 \value{
 list of class 't_test' containing input variables, summary statistics & test statistics
