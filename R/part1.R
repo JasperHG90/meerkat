@@ -58,42 +58,15 @@ t_test <- function(x, y, variance_equal = TRUE) {
 
   }
 
-  ## Calculate statistics needed to perform t-test
-
-  # Observations
-  n_x <- length(x)
-  n_y <- length(y)
-
-  # Degrees of freedom
-  df <- (n_x + n_y) - 2
-
-  # Means
-  mu_x <- 1/n_x * sum(x)
-  mu_y <- 1/n_y * sum(y)
-
-  # Variances
-  var_x <- sum( (x-mu_x)^2 ) / ( n_x - 1 )
-  var_y <- sum( (y-mu_y)^2 ) / ( n_y - 1 )
-
-  ## Calculate t-statistic
-  if( variance_equal ) {
-
-    # Pooled variance
-    s <- pooled_variance(var_x, var_y,
-                         n_x, n_y)
-
-    # t-stat (equal variances)
-    tt_result <- t_statistic(mu_x, mu_y, n_x, n_y, poolvar = s)
-
-  } else {
-
-    # t-stat (unequal variances)
-    tt_result <- t_statistic(mu_x, mu_y, n_x, n_y, var_x = var_x, var_y = var_y)
-
-  }
+  # Call the t-statistic wrapper
+  call_wrapper <- calc_t_statistic(x, y, variance_equal = variance_equal)
 
   # P-value (make this two-tailed)
-  pval <- 2 * pt( tt_result, df, lower.tail = FALSE )
+  call_wrapper$test$pval <- 2 * pt( call_wrapper$test$tstat, call_wrapper$test$df,
+                                    lower.tail = FALSE )
+
+  # Bootstrap CI
+  CI <- bootstrap(x, y, variance_equal = variance_equal)
 
   ## Make list of results
   res <- list(
@@ -102,27 +75,10 @@ t_test <- function(x, y, variance_equal = TRUE) {
       "y" = y,
       "variance_equal" = variance_equal
     ),
-    "summary_statistics" = list(
-      "mu_x" = mu_x,
-      "mu_y" = mu_y,
-      "var_x" = var_x,
-      "var_y" = var_y,
-      "n_x" = n_x,
-      "n_y" = n_y
-    ),
-    "test" = list(
-      "tstat" = tt_result,
-      "df" = df,
-      "pval" = pval
-    )
+    "summary_statistics" = call_wrapper$summary_statistics,
+    "test" = call_wrapper$test,
+    "CI" = CI
   )
-
-  ## If equal variances, add pooled variance to results
-  if(variance_equal) {
-
-    res$summary_statistics$pooled_variance <- s
-
-  }
 
   ## If NA values were omitted, add indices of these values
   if(!is.null(missing)) {
@@ -173,7 +129,11 @@ print.t_test <- function(x) {
     "t-statistic\tdf\tp-value\t\n",
     round(x$test$tstat, digits=2), "\t\t",
     x$test$df, "\t",
-    round(x$test$pval, digits=3))
+    round(x$test$pval, digits=3), "\n\n",
+    # Print bootstrapped CI
+    "Bootstrapped 95% CI:","\n",
+    "Lower\tUpper\n",
+    round(x$CI$lower, digits=2), "\t", round(x$CI$upper, digits=2))
 
   ## Use cat() to print the message + formatting to the console
   cat(msg)
@@ -181,6 +141,76 @@ print.t_test <- function(x) {
 }
 
 # Helper functions ----
+
+# Wrapper for the t_statistic and pooled_variance functions
+#
+# @param
+#
+# @return
+calc_t_statistic <- function(x, y, variance_equal) {
+
+  ## Calculate statistics needed to perform t-test
+
+  # Observations
+  n_x <- length(x)
+  n_y <- length(y)
+
+  # Degrees of freedom
+  df <- (n_x + n_y) - 2
+
+  # Means
+  mu_x <- 1/n_x * sum(x)
+  mu_y <- 1/n_y * sum(y)
+
+  # Variances
+  var_x <- sum( (x-mu_x)^2 ) / ( n_x - 1 )
+  var_y <- sum( (y-mu_y)^2 ) / ( n_y - 1 )
+
+  ## Calculate t-statistic
+  if( variance_equal ) {
+
+    # Pooled variance
+    s <- pooled_variance(var_x, var_y,
+                         n_x, n_y)
+
+    # t-stat (equal variances)
+    tt_result <- t_statistic(mu_x, mu_y, n_x, n_y, poolvar = s)
+
+  } else {
+
+    # t-stat (unequal variances)
+    tt_result <- t_statistic(mu_x, mu_y, n_x, n_y,
+                             var_x = var_x, var_y = var_y)
+
+  }
+
+  ## Store results
+  res <- list(
+    "summary_statistics" = list(
+      "mu_x" = mu_x,
+      "mu_y" = mu_y,
+      "var_x" = var_x,
+      "var_y" = var_y,
+      "n_x" = n_x,
+      "n_y" = n_y
+    ),
+    "test" = list(
+      "tstat" = tt_result,
+      "df" = df
+    )
+  )
+
+  ## If equal variances, add pooled variance to results
+  if(variance_equal) {
+
+    res$summary_statistics$pooled_variance <- s
+
+  }
+
+  ## Return summary statistics and t-statistic
+  return(res)
+
+}
 
 # Calculate the t-statistic for two variables
 #
@@ -237,7 +267,8 @@ pooled_variance <- function(var_x, var_y, n_x, n_y) {
 # @param
 #
 # @return
-bootstrap <- function(x, y, R = 1000, ssize = 0.5) {
+bootstrap <- function(x, y, R = 1000, ssize = 0.5,
+                      variance_equal = TRUE) {
 
   ## ssize must be less than 1 & larger than 0
   if(!(ssize < 1 & ssize > 0)) {
@@ -259,8 +290,8 @@ bootstrap <- function(x, y, R = 1000, ssize = 0.5) {
     s_x <- sample(x, ss_x, replace = TRUE)
     s_y <- sample(y, ss_y, replace = TRUE)
 
-    ## Perform test
-    test <- t_test(s_x, s_y)
+    ## Calculate t_statistic
+    test <- calc_t_statistic(s_x, s_y, variance_equal = variance_equal)
     tstat_out[it] <- test$test$tstat
 
   }
