@@ -117,6 +117,9 @@ t_test <- function(x, y, variance_equal = TRUE, ...) {
   ## Bootstrap CI
   CI <- bootstrap(x, y, R = R, ssize = ssize, variance_equal = variance_equal)
 
+  ## Add bias
+  CI$bias <- call_wrapper$test$tstat - CI$avg
+
   ## Make list of results
   res <- list(
     "inputs" = inputs,
@@ -176,9 +179,12 @@ print.t_test <- function(x) {
     x$test$df, "\t",
     round(x$test$pval, digits=3), "\n\n",
     # Print bootstrapped CI
-    "Bootstrapped 95% CI:","\n",
-    "Lower\tUpper\n",
-    round(x$CI$lower, digits=2), "\t", round(x$CI$upper, digits=2))
+    "Bootstrapped 95% CI (Naive bootstrap):","\n",
+    "Lower\tUpper\tAvg.\tBias\n",
+    round(x$CI$lower, digits=2), "\t",
+    round(x$CI$upper, digits=2), "\t",
+    round(x$CI$avg, digits=2), "\t",
+    round(x$CI$bias, digits=2))
 
   ## Use cat() to print the message + formatting to the console
   cat(msg)
@@ -318,7 +324,7 @@ pooled_variance <- function(var_x, var_y, n_x, n_y) {
 #
 # @return upper and lower confidence interval.
 #
-# @seealso <ARTICLE NAME>
+# @seealso Preacher & Hayes (2008). Asymptotic and resampling strategies for assessing and comparing indirect effects in multiple mediator models. Behavior Research Methods 2008, 40 (3), 879-891 doi: 10.3758/BRM.40.3.879
 bootstrap <- function(x, y, R = 1000, ssize = 0.5,
                       variance_equal = TRUE) {
 
@@ -365,7 +371,8 @@ bootstrap <- function(x, y, R = 1000, ssize = 0.5,
   return(
     list(
       "lower" = lower_ci,
-      "upper" = upper_ci
+      "upper" = upper_ci,
+      "avg" = mean(tstat_out)
     )
   )
 
