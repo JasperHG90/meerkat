@@ -24,19 +24,36 @@ linear_model <- function(formula, data) {
   init <- perform_checks(formula, data)
 
   ## Summary statistics
-  ss <- summary_statistics(init$inputs$X)
+  ss <- summary_statistics(init$inputs$X,
+                           init$inputs$n,
+                           init$inputs$m)
 
   ## Linear model
   coeff <- linear_regression(init$inputs$X,
                              init$inputs$y)
 
   ## Tests
+  tests <- compute_tests(init$inputs$X,
+                         init$inputs$y,
+                         coeff,
+                         init$inputs$n,
+                         init$inputs$m)
+
+  ## Bring results together into one list
+  res <- list(
+
+    "inputs" = init,
+    "summary_statistics" = ss,
+    "coefficients" = coeff,
+    "tests" = tests
+
+  )
 
   ## Set class
-  attr(init, "linear_model")
+  class(res) <- "linear_model"
 
   ## Return
-  return(init)
+  return(res)
 
 }
 
@@ -50,6 +67,7 @@ summary.linear_model <- function(x) {
 
 print.linear_model <- function(x) {
 
+  cat("print")
 
 }
 
@@ -59,10 +77,26 @@ plot.linear_model <- function(x) {
 
 }
 
-coef.linear_model <- function(x) {}
+# Coef method
+coef.linear_model <- function(x) {
 
-residuals.linear_model <- function(x) {}
+  x$coefficients
 
+}
+
+# Predict method
+predict.linear_model <- function(x) {
+
+  x$tests$predicted
+
+}
+
+# Residuals & resid method
+residuals.linear_model <- function(x) {
+
+  x$tests$residuals
+
+}
 resid.linear_model <- function(x) {
 
   residuals.linear_model(x)
@@ -174,13 +208,20 @@ perform_checks <- function(formula, data) {
   ## Create design matrix
   X <- model.matrix(formula, data)
 
+  ## Number of observations
+  n <- nrow(X)
+  ## Number of columns
+  m <- ncol(X)
+
   ## Put in list & return
   res <- list(
     "inputs" = list(
       "formula" = formula,
       "variables" = vars,
       "y" = y,
-      "X" = X
+      "X" = X,
+      "n" = n,
+      "m" = m
     )
   )
 
@@ -190,12 +231,8 @@ perform_checks <- function(formula, data) {
 
 ## Calculate summary statistics
 
-summary_statistics <- function(X) {
+summary_statistics <- function(X, n, m) {
 
-  ## Number of observations
-  n <- nrow(X)
-  ## Number of columns
-  m <- ncol(X)
   ## Columns names
   cnames <- colnames(X)
   ## Take intercept (column vector of ones)
@@ -231,6 +268,7 @@ summary_statistics <- function(X) {
 
 }
 
+# Compute the mean
 cmean <- function(n, X, ones) {
 
   ## Compute mean
@@ -238,6 +276,7 @@ cmean <- function(n, X, ones) {
 
 }
 
+# Compute variance
 cvar <- function(n, X, means, ones) {
 
   ## Compute variance
@@ -256,12 +295,6 @@ linear_regression <- function(X, y) {
 
 ## Inference
 
-# Degrees of freedom
-# Call
-# Residuals
-# MSRE
-# MSE
-
 # Calculate p-values, F-ratio, SE values, etc
 compute_tests <- function(X, y, coeff, n, m) {
 
@@ -272,7 +305,7 @@ compute_tests <- function(X, y, coeff, n, m) {
   tvalues <- tvalue(coeff, SE)
 
   # Compute the p-values for the t-values of the coeffficients
-  pvalues_tstats <- Pvalues(tvals, (n-m))
+  pvalues_tstats <- Pvalues(tvalues, (n-m))
 
   # Predict y given the model
   yhat <- predict_y(X, coeff)
