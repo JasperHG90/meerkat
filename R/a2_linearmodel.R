@@ -168,7 +168,8 @@ print.linear_model <- function(x) {
   ## Construct message
   msg <- paste0(
 
-    "Linear regression model containing ", x$inputs$m, " predictors and ", x$inputs$n, " observations\n\n",
+    "Linear regression model containing ", x$inputs$m, " predictors and ",
+    x$inputs$n, " observations\n\n",
     "DV: ", x$inputs$variables$DV, "\n",
     "IV: ", ifelse(length(x$inputs$variables$IV) > 1,
                    paste0(x$inputs$variables$IV, collapse= ", "),
@@ -228,8 +229,12 @@ resid.linear_model <- function(x) {
 
 # Helper functions ----
 
-## Perform checks for the model
-
+# Ensure that the user passed a valid formula
+#
+# @param column names of the design matrix X
+# @param formula formula as passed to linear_model()
+#
+# @return list containing the dependent variable (DV) and independent variable(s) (IV)
 check_formula <- function(varnames, formula) {
 
   ## Coerce to character
@@ -300,6 +305,12 @@ check_formula <- function(varnames, formula) {
 
 }
 
+# Perform checks for the model
+#
+# @param formula formula as passed to linear_model()
+# @param data data as passed by the user
+#
+# @return a list containing variable names, the formula, the design matrix X (as a model.matrix()), the outcome variable y, the number of observations n and the number of predictors m
 perform_checks <- function(formula, data) {
 
   ## Check if formula is formula or if it can be coerced to one
@@ -352,8 +363,13 @@ perform_checks <- function(formula, data) {
 
 }
 
-## Calculate summary statistics
-
+# Calculate summary statistics
+#
+# @param X design matrix
+# @param n number of observations
+# @param m number of predictors
+#
+# @return list containing means, variances, minimums, maximums, degrees of freedom & number of observations n
 summary_statistics <- function(X, n, m) {
 
   ## Columns names
@@ -392,6 +408,12 @@ summary_statistics <- function(X, n, m) {
 }
 
 # Compute the mean
+#
+# @param n number of observations
+# @param X design matrix
+# @param column vector (as matrix) containing n times the value 1
+#
+# @return mean for each independent variable
 cmean <- function(n, X, ones) {
 
   ## Compute mean
@@ -400,6 +422,13 @@ cmean <- function(n, X, ones) {
 }
 
 # Compute variance
+#
+# @param n number of observations
+# @param X design matrix
+# @param means vector containing means for each variable as returned by cmean() function
+# @param column vector (as matrix) containing n times the value 1
+#
+# @return variance for each independent variable
 cvar <- function(n, X, means, ones) {
 
   ## Compute variance
@@ -407,8 +436,12 @@ cvar <- function(n, X, means, ones) {
 
 }
 
-## Calculate the coefficients and intercept
-
+# Calculate the regression coefficients and intercept
+#
+# @param X design matrix
+# @param y outcome vector (as matrix)
+#
+# @return estimators for each variable plus intercept
 linear_regression <- function(X, y) {
 
   ## Apply the linear regression formula
@@ -425,6 +458,14 @@ linear_regression <- function(X, y) {
 ## Inference
 
 # Calculate p-values, F-ratio, SE values, etc
+#
+# @param X design matrix
+# @param y outcome vector (as matrix)
+# @param coeff regression coefficients as returned by linear_regression()
+# @param n number of observations
+# @param m number of predictors
+#
+# @return list containing standard errors, t-values & pvalues for the estimators. Also returns: predicted values, residuals, sums of squares, means of squares, F-statistic & associated p-value & R-squared
 compute_tests <- function(X, y, coeff, n, m) {
 
   # Get standard errors
@@ -464,10 +505,20 @@ compute_tests <- function(X, y, coeff, n, m) {
 
 }
 
+# Calculate standard errors for the estimators
+#
+# @param y outcome vector (as matrix)
+# @param X design matrix
+# @param coeff regression coefficients as returned by linear_regression()
+# @param n number of observations
+# @param m number of predictors
+#
 # @details code adapted from: https://stats.stackexchange.com/questions/44838/how-are-the-standard-errors-of-coefficients-calculated-in-a-regression
 # @seealso
 #   b) https://stats.stackexchange.com/questions/85943/how-to-derive-the-standard-error-of-linear-regression-coefficient
 #   c) https://stat.ethz.ch/pipermail/r-help/2006-September/113115.html
+#
+# @return column vector containing the standard errors for each estimator
 standard_errors <- function(y, X, coeff, n, m) {
 
   # Variable names
@@ -495,6 +546,11 @@ standard_errors <- function(y, X, coeff, n, m) {
 }
 
 # Compute t-values given estimate of standard errors and coefficients
+#
+# @param coeff regression coefficients as returned by linear_regression()
+# @param SE standard errors as returned by standard_errors()
+#
+# @return column vector containing t-values for each estimator
 tvalue <- function(coeff, SE) {
 
   tval <- coeff / SE
@@ -507,6 +563,11 @@ tvalue <- function(coeff, SE) {
 }
 
 # Compute p-values of coefficients given t-values
+#
+# @param tvals t-values as returned by tvalue()
+# @param df degrees of freedom (n-p) for the model
+#
+# @return column vector containing p-values for each estimator
 Pvalues <- function(tvals, df) {
 
   ## If t-value is negative, use lower tail to get probabilities X<= x
@@ -524,6 +585,11 @@ Pvalues <- function(tvals, df) {
 }
 
 # Predict values of y given the design matrix and the coefficients
+#
+# @param X design matrix
+# @param coeff regression coefficients as returned by linear_regression()
+#
+# @return vector containing the predicted values given the linear model
 predict_y <- function(X, coeff) {
 
   return(as.vector(matrix(coeff, ncol = length(coeff)) %*% t(X)))
@@ -531,6 +597,11 @@ predict_y <- function(X, coeff) {
 }
 
 # Compute the residuals of the model
+#
+# @param y actual outcomes
+# @param yhat predicted values as returned by predict_y()
+#
+# @return vector containing residuals given the linear model
 compute_residuals <- function(y, yhat) {
 
   return(y - yhat)
@@ -538,7 +609,15 @@ compute_residuals <- function(y, yhat) {
 }
 
 # Compute the sums of squares for the model, the F-statistic and the r-squared value
+#
+# @param n number of observations
+# @param p number of predictors
+# @param yhat predicted values as returned by predicted_values()
+# @param resids residuals as returned by compute_residuals()
+#
 # @seealso: http://facweb.cs.depaul.edu/sjost/csc423/documents/f-test-reg.htm
+#
+# @return list containing sums of squares, means of squares, F-statistic and associated p-value and R-squared value
 sums_of_squares <- function(n, p, y, yhat, resids) {
 
   ## Total sums of squares
