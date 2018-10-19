@@ -92,10 +92,10 @@ summary.linear_model <- function(x) {
   ## Model information
 
   # Retrieve information from object
-  cf <- mod2$coefficients
-  se <- mod2$tests$coef$standard_errors
-  t <- mod2$tests$coef$t_values
-  p <- mod2$tests$coef$p
+  cf <- x$coefficients
+  se <- x$tests$coef$standard_errors
+  t <- x$tests$coef$t_values
+  p <- x$tests$coef$p
 
   # Bind together
   modinfo <- do.call(cbind, list(cf, se, t, p))

@@ -22,6 +22,7 @@ See the code I sent to you.
 #### 2. 
 
 ```{r}
+library(meerkat)
 # Create two variables
 CSFI <- c(2,5,5,6,6,7,8,9)
 TFI <- c(1,1,2,3,3,4,5,7,7,8)
@@ -87,12 +88,11 @@ plot(predicted_mod1, residuals_mod1)
 
 ```{r}
 # Make subset of the variables
-gala_ss <- as.matrix(gala[,c("Area", "Elevation", "Endemics")])
 y <- as.matrix(gala[, "Species"])
-# Make a column vector of length nrow(gala_ss) containing only values of 1
-onevect <- matrix(rep(1, nrow(gala_ss)), ncol=1)
-# Bind the data together
-X <- cbind(onevect, gala_ss)
+# Create a formula
+form <- formula("Species ~ Area + Elevation + Endemics")
+# Create a model matrix
+X <- model.matrix(form, gala)
 # Apply the formula for the linear model
 linmod <- solve( t(X) %*% X ) %*% t(X) %*% y
 # Create the predicted values
@@ -106,3 +106,18 @@ plot(yhat, resid)
 The results obtained are the same as those obtained from the `lm()` function
 
 #### 3.
+
+```{r}
+library(meerkat)
+
+gala_mod <- linear_model(form, gala)
+gala_mod
+```
+
+```{r}
+summary(gala_mod)
+```
+
+```{r}
+plot(gala_mod)
+```

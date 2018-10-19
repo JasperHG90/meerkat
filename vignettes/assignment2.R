@@ -5,7 +5,7 @@ TFI <- c(1,1,2,3,3,4,5,7,7,8)
 
 # Calculate t-test
 tt1 <- meerkat::t_test(CSFI, TFI, variance_equal = TRUE, 
-                       bootstrap_ssize = 0.5, 
+                       bootstrap_ssize = 0.7, 
                        R=1000)
 tt1
 
@@ -32,12 +32,11 @@ plot(predicted_mod1, residuals_mod1)
 
 ## ------------------------------------------------------------------------
 # Make subset of the variables
-gala_ss <- as.matrix(gala[,c("Area", "Elevation", "Endemics")])
 y <- as.matrix(gala[, "Species"])
-# Make a column vector of length nrow(gala_ss) containing only values of 1
-onevect <- matrix(rep(1, nrow(gala_ss)), ncol=1)
-# Bind the data together
-X <- cbind(onevect, gala_ss)
+# Create a formula
+form <- formula("Species ~ Area + Elevation + Endemics")
+# Create a model matrix
+X <- model.matrix(form, gala)
 # Apply the formula for the linear model
 linmod <- solve( t(X) %*% X ) %*% t(X) %*% y
 # Create the predicted values
@@ -46,4 +45,16 @@ yhat <- X %*% linmod
 resid <- (y - yhat)
 # Plot
 plot(yhat, resid)
+
+## ------------------------------------------------------------------------
+library(meerkat)
+
+gala_mod <- linear_model(form, gala)
+gala_mod
+
+## ------------------------------------------------------------------------
+summary(gala_mod)
+
+## ------------------------------------------------------------------------
+plot(gala_mod)
 
