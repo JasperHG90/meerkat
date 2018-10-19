@@ -118,8 +118,12 @@ t_test <- function(x, y, variance_equal = TRUE, ...) {
   call_wrapper <- calc_t_statistic(x, y, variance_equal = variance_equal)
 
   # P-value (make this two-tailed)
-  call_wrapper$test$pval <- 2 * pt( call_wrapper$test$tstat, call_wrapper$test$df,
-                                    lower.tail = FALSE )
+  call_wrapper$test$pval <- ifelse(call_wrapper$test$tstat < 0 ,
+                                   2 * pt( call_wrapper$test$tstat,
+                                           call_wrapper$test$df,lower.tail = TRUE ),
+                                   2 * pt( call_wrapper$test$tstat,
+                                           call_wrapper$test$df, lower.tail = FALSE )
+  )
 
   ## Bootstrap CI
   CI <- bootstrap(x, y, R = R, ssize = ssize, variance_equal = variance_equal)

@@ -493,7 +493,12 @@ tvalue <- function(coeff, SE) {
 # Compute p-values of coefficients given t-values
 Pvalues <- function(tvals, df) {
 
-  pvals <- 2 * pt( tvals, df, lower.tail = FALSE )
+  ## If t-value is negative, use lower tail to get probabilities X<= x
+  ## Else, get probabilities X >= x
+  pvals <- ifelse(tvals < 0,
+                  2 * pt( tvals, df, lower.tail = TRUE ),
+                  2 * pt( tvals, df, lower.tail = FALSE )
+  )
   ## Colnames
   colnames(pvals) <- "p"
 

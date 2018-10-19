@@ -13,17 +13,17 @@ vignette: >
 
 The code for this assignment is stored in the 'meerkat' package. It contains helper functions that are not exported and for which no visible documentation was written. At the start of each part, I give a link to the R-code hosted on GitHub where you can view the code.
 
-## Part I
+## PART I
 
 The code for the t-test can be found [here](https://github.com/JasperHG90/meerkat/blob/master/R/a2_ttest.R)
 
-**1. Create a function that computes the t-test.** 
+*1. Create a function that computes the t-test.*
 
 See the code for the t-statistic [here](https://github.com/JasperHG90/meerkat/blob/master/R/a2_ttest.R#L202-L303) and the pooled variance [here](https://github.com/JasperHG90/meerkat/blob/master/R/a2_ttest.R#L315-L323)
 
 The `t_test` function can be found [here](https://github.com/JasperHG90/meerkat/blob/master/R/a2_ttest.R#L33-L151)
 
-**2. Test your function with the following data obtained from a study by air force psychologists conducting research into the relative effectiveness of training pilots (see Table 1). The first training method consists of computer simulated flight instruction (CSFI) while the second training method uses traditional flight instruction (TFI). The 18 pilots were randomly assigned to the two experimental conditions CSFI and TFI and the performance test scores in each condition are displayed in Table 1. Calculate the t-statistic with your newly created function and check the results by analyzing the same data with the in-built R function t.test and compare the results.**
+*2. Test your function with the following data obtained from a study by air force psychologists conducting research into the relative effectiveness of training pilots (see Table 1). The first training method consists of computer simulated flight instruction (CSFI) while the second training method uses traditional flight instruction (TFI). The 18 pilots were randomly assigned to the two experimental conditions CSFI and TFI and the performance test scores in each condition are displayed in Table 1. Calculate the t-statistic with your newly created function and check the results by analyzing the same data with the in-built R function t.test and compare the results.*
 
 ```{r}
 library(meerkat)
@@ -47,13 +47,13 @@ When we compare this to the built-in R function, we get:
 t.test(CSFI, TFI, var.equal = TRUE)
 ```
 
-The t-test We observe that the 95\% confidence interval contains $0$. This means that we may conclude there is no effect.
+From the t-test We observe that the 95\% confidence interval contains $0$. This means that we may conclude there is no effect.
 
-**3. Add code to your function that calculates the p-value for a two-sided t-test.**
+*3. Add code to your function that calculates the p-value for a two-sided t-test.*
 
 See the code [here](https://github.com/JasperHG90/meerkat/blob/master/R/a2_ttest.R#L121-L122)
 
-**4. The last part of your function consists of organizing the output in the form of a list. The output should consist of at least the value of the t-statistic and the p-value. You are free to add other statistics of interests.**
+*4. The last part of your function consists of organizing the output in the form of a list. The output should consist of at least the value of the t-statistic and the p-value. You are free to add other statistics of interests.*
 
 The print method of the `t_test()` function prints the information returned by this function in a neatly organized way. 
 
