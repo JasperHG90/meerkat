@@ -97,7 +97,7 @@
 <h2 class="hasAnchor">
 <a href="#part-i" class="anchor"></a>PART I</h2>
 <p>The code for the t-test can be found <a href="https://github.com/JasperHG90/meerkat/blob/master/R/a2_ttest.R">here</a></p>
-<p><strong>1. Create a function that computes the t-test.</strong></p>
+<p><em>1. Create a function that computes the t-test.</em></p>
 <p>See the code for the t-statistic <a href="https://github.com/JasperHG90/meerkat/blob/master/R/a2_ttest.R#L202-L303">here</a> and the pooled variance <a href="https://github.com/JasperHG90/meerkat/blob/master/R/a2_ttest.R#L315-L323">here</a></p>
 <p>The <code>t_test</code> function can be found <a href="https://github.com/JasperHG90/meerkat/blob/master/R/a2_ttest.R#L33-L151">here</a></p>
 <p><em>2. Test your function with the following data obtained from a study by air force psychologists conducting research into the relative effectiveness of training pilots (see Table 1). The first training method consists of computer simulated flight instruction (CSFI) while the second training method uses traditional flight instruction (TFI). The 18 pilots were randomly assigned to the two experimental conditions CSFI and TFI and the performance test scores in each condition are displayed in Table 1. Calculate the t-statistic with your newly created function and check the results by analyzing the same data with the in-built R function t.test and compare the results.</em></p>
@@ -142,7 +142,7 @@ tt1</code></pre></div>
 ## sample estimates:
 ## mean of x mean of y 
 ##       6.0       4.1</code></pre>
-<p>The t-test We observe that the 95% confidence interval contains <span class="math inline">\(0\)</span>. This means that we may conclude there is no effect.</p>
+<p>From the t-test We observe that the 95% confidence interval contains <span class="math inline">\(0\)</span>. This means that we may conclude there is no effect.</p>
 <p><em>3. Add code to your function that calculates the p-value for a two-sided t-test.</em></p>
 <p>See the code <a href="https://github.com/JasperHG90/meerkat/blob/master/R/a2_ttest.R#L121-L122">here</a></p>
 <p><em>4. The last part of your function consists of organizing the output in the form of a list. The output should consist of at least the value of the t-statistic and the p-value. You are free to add other statistics of interests.</em></p>
@@ -253,11 +253,13 @@ gala_mod</code></pre></div>
 ## max        4669.32   1707.00    95.00
 ## 
 ## Model information :
-##             Estimate     SE       t      p
-## (Intercept) -15.8912 7.5692 -2.0995 0.0456
-## Area          0.0127 0.0089  1.4179 0.1681
-## Elevation    -0.0414 0.0237 -1.7520 0.0916
-## Endemics      4.3318 0.3047 14.2173 0.0000
+##             Estimate     SE       t      p Sig.
+## (Intercept) -15.8912 7.5692 -2.0995 0.0456    *
+## Area          0.0127 0.0089  1.4179 0.1681     
+## Elevation    -0.0414 0.0237 -1.7520 0.0916    .
+## Endemics      4.3318 0.3047 14.2173 0.0000  ***
+## 
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
 ## F-statistic: 161.85, p-value: 0
 ## R-squared: 0.9492
