@@ -11,17 +11,19 @@ vignette: >
 
 ## Introduction
 
-The code for this assignment is stored in the 'meerkat' package. It contains helper functions that are not exported and for which no visible documentation was written. Please see the code that I sent you for a detailed overview for each function.
+The code for this assignment is stored in the 'meerkat' package. It contains helper functions that are not exported and for which no visible documentation was written. At the start of each part, I give a link to the R-code hosted on GitHub where you can view the code.
 
 ## Part I
 
 The code for the t-test can be found [here](https://github.com/JasperHG90/meerkat/blob/master/R/a2_ttest.R)
 
-#### 1.
+**1. Create a function that computes the t-test.** 
 
-See the code I sent to you.
+See the code for the t-statistic [here](https://github.com/JasperHG90/meerkat/blob/master/R/a2_ttest.R#L202-L303) and the pooled variance [here](https://github.com/JasperHG90/meerkat/blob/master/R/a2_ttest.R#L315-L323)
 
-#### 2. 
+The `t_test` function can be found [here](https://github.com/JasperHG90/meerkat/blob/master/R/a2_ttest.R#L33-L151)
+
+**2. Test your function with the following data obtained from a study by air force psychologists conducting research into the relative effectiveness of training pilots (see Table 1). The first training method consists of computer simulated flight instruction (CSFI) while the second training method uses traditional flight instruction (TFI). The 18 pilots were randomly assigned to the two experimental conditions CSFI and TFI and the performance test scores in each condition are displayed in Table 1. Calculate the t-statistic with your newly created function and check the results by analyzing the same data with the in-built R function t.test and compare the results.**
 
 ```{r}
 library(meerkat)
@@ -47,11 +49,11 @@ t.test(CSFI, TFI, var.equal = TRUE)
 
 The t-test We observe that the 95\% confidence interval contains $0$. This means that we may conclude there is no effect.
 
-#### 3.
+**3. Add code to your function that calculates the p-value for a two-sided t-test.**
 
-See the code I sent to you
+See the code [here](https://github.com/JasperHG90/meerkat/blob/master/R/a2_ttest.R#L121-L122)
 
-#### 4.
+**4. The last part of your function consists of organizing the output in the form of a list. The output should consist of at least the value of the t-statistic and the p-value. You are free to add other statistics of interests.**
 
 The print method of the `t_test()` function prints the information returned by this function in a neatly organized way. 
 
@@ -66,22 +68,27 @@ t1 <- t_test(CSFI, TFI)
 names(t1)
 ```
 
+See the code [here](https://github.com/JasperHG90/meerkat/blob/master/R/a2_ttest.R#L131-L136), [here](https://github.com/JasperHG90/meerkat/blob/master/R/a2_ttest.R#L248-L261), and [here](https://github.com/JasperHG90/meerkat/blob/master/R/a2_ttest.R#L379-L383)
+
 ## PART II
 
 The code for the linear model can be found [here](https://github.com/JasperHG90/meerkat/blob/master/R/a2_linearmodel.R)
 
 ```{r}
+# Load gala data
 data("gala")
 ```
 
-#### 1.
+*1. Use the in-built R-function for linear regression and the summary() function to obtain the output for a multiple linear regression analysis on the variables described. Obtain predicted values and residuals using the extractor functions. Make a plot of the predicted values against the residuals. Give an interpretation of the results of the regression model and the plot*
 
 ```{r}
+# Run a linear regression model
 mod1 <- lm("Species ~ Area + Elevation + Endemics", data = gala)
 summary(mod1)
 ```
 
 ```{r}
+# Retrieve residuals and predicted values
 residuals_mod1 <- resid(mod1)
 predicted_mod1 <- predict(mod1)
 
@@ -89,7 +96,7 @@ predicted_mod1 <- predict(mod1)
 plot(predicted_mod1, residuals_mod1)
 ```
 
-#### 2.
+*2. Obtain the same estimates as in the previous step, but now with matrix algebra*
 
 ```{r}
 # Make subset of the variables
@@ -110,18 +117,31 @@ plot(yhat, resid)
 
 The results obtained are the same as those obtained from the `lm()` function
 
-#### 3.
+```{r}
+print.listof(list("Coefficients" = cbind(linmod, coef(mod1))))
+```
+
+*3. Once you have the correct code to obtain the estimates with matrix algebra, write a function that has as input a data set suitable for multiple linear regression*
+
+See the code of the `linear_model()` function [here](https://github.com/JasperHG90/meerkat/blob/master/R/a2_linearmodel.R#L37-L74). The helper functions in this file calculate residuals, predicted values, t-statistics, p-values, $R^2$, F-statistic etc.
 
 ```{r}
+# Load the meerkat library
 library(meerkat)
-
+# Create the model using the formula and the gala data
 gala_mod <- linear_model(form, gala)
+# Print the model
 gala_mod
 ```
 
+Like the `lm()` function, we can call `summary()` on the model
+
 ```{r}
+# Call the summary function
 summary(gala_mod)
 ```
+
+The `plot()` method for the `linear_model()` function plots the predicted values versus the residuals
 
 ```{r}
 plot(gala_mod)

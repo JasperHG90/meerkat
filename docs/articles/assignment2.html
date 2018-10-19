@@ -91,20 +91,16 @@
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
-<p>The code for this assignment is stored in the ‘meerkat’ package. It contains helper functions that are not exported and for which no visible documentation was written. Please see the code that I sent you for a detailed overview for each function.</p>
+<p>The code for this assignment is stored in the ‘meerkat’ package. It contains helper functions that are not exported and for which no visible documentation was written. At the start of each part, I give a link to the R-code hosted on GitHub where you can view the code.</p>
 </div>
 <div id="part-i" class="section level2">
 <h2 class="hasAnchor">
 <a href="#part-i" class="anchor"></a>Part I</h2>
 <p>The code for the t-test can be found <a href="https://github.com/JasperHG90/meerkat/blob/master/R/a2_ttest.R">here</a></p>
-<div id="section" class="section level4">
-<h4 class="hasAnchor">
-<a href="#section" class="anchor"></a>1.</h4>
-<p>See the code I sent to you.</p>
-</div>
-<div id="section-1" class="section level4">
-<h4 class="hasAnchor">
-<a href="#section-1" class="anchor"></a>2.</h4>
+<p><strong>1. Create a function that computes the t-test.</strong></p>
+<p>See the code for the t-statistic <a href="https://github.com/JasperHG90/meerkat/blob/master/R/a2_ttest.R#L202-L303">here</a> and the pooled variance <a href="https://github.com/JasperHG90/meerkat/blob/master/R/a2_ttest.R#L315-L323">here</a></p>
+<p>The <code>t_test</code> function can be found <a href="https://github.com/JasperHG90/meerkat/blob/master/R/a2_ttest.R#L33-L151">here</a></p>
+<p><strong>2. Test your function with the following data obtained from a study by air force psychologists conducting research into the relative effectiveness of training pilots (see Table 1). The first training method consists of computer simulated flight instruction (CSFI) while the second training method uses traditional flight instruction (TFI). The 18 pilots were randomly assigned to the two experimental conditions CSFI and TFI and the performance test scores in each condition are displayed in Table 1. Calculate the t-statistic with your newly created function and check the results by analyzing the same data with the in-built R function t.test and compare the results.</strong></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(meerkat)
 <span class="co"># Create two variables</span>
 CSFI &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">5</span>,<span class="dv">5</span>,<span class="dv">6</span>,<span class="dv">6</span>,<span class="dv">7</span>,<span class="dv">8</span>,<span class="dv">9</span>)
@@ -147,15 +143,9 @@ tt1</code></pre></div>
 ## mean of x mean of y 
 ##       6.0       4.1</code></pre>
 <p>The t-test We observe that the 95% confidence interval contains <span class="math inline">\(0\)</span>. This means that we may conclude there is no effect.</p>
-</div>
-<div id="section-2" class="section level4">
-<h4 class="hasAnchor">
-<a href="#section-2" class="anchor"></a>3.</h4>
-<p>See the code I sent to you</p>
-</div>
-<div id="section-3" class="section level4">
-<h4 class="hasAnchor">
-<a href="#section-3" class="anchor"></a>4.</h4>
+<p><strong>3. Add code to your function that calculates the p-value for a two-sided t-test.</strong></p>
+<p>See the code <a href="https://github.com/JasperHG90/meerkat/blob/master/R/a2_ttest.R#L121-L122">here</a></p>
+<p><strong>4. The last part of your function consists of organizing the output in the form of a list. The output should consist of at least the value of the t-statistic and the p-value. You are free to add other statistics of interests.</strong></p>
 <p>The print method of the <code><a href="../reference/t_test.html">t_test()</a></code> function prints the information returned by this function in a neatly organized way.</p>
 <p>The <code><a href="../reference/t_test.html">t_test()</a></code> function returns an S3 object containing:</p>
 <ul>
@@ -170,16 +160,16 @@ tt1</code></pre></div>
 <span class="kw">names</span>(t1)</code></pre></div>
 <pre><code>## [1] "inputs"             "summary_statistics" "test"              
 ## [4] "CI"</code></pre>
-</div>
+<p>See the code <a href="https://github.com/JasperHG90/meerkat/blob/master/R/a2_ttest.R#L131-136">here</a>, <a href="https://github.com/JasperHG90/meerkat/blob/master/R/a2_ttest.R#L248-261">here</a>, and <a href="https://github.com/JasperHG90/meerkat/blob/master/R/a2_ttest.R#379-383">here</a></p>
 </div>
 <div id="part-ii" class="section level2">
 <h2 class="hasAnchor">
 <a href="#part-ii" class="anchor"></a>PART II</h2>
 <p>The code for the linear model can be found <a href="https://github.com/JasperHG90/meerkat/blob/master/R/a2_linearmodel.R">here</a></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(<span class="st">"gala"</span>)</code></pre></div>
-<div id="section-4" class="section level4">
+<div id="section" class="section level4">
 <h4 class="hasAnchor">
-<a href="#section-4" class="anchor"></a>1.</h4>
+<a href="#section" class="anchor"></a>1.</h4>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mod1 &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="st">"Species ~ Area + Elevation + Endemics"</span>, <span class="dt">data =</span> gala)
 <span class="kw">summary</span>(mod1)</code></pre></div>
 <pre><code>## 
@@ -209,9 +199,9 @@ predicted_mod1 &lt;-<span class="st"> </span><span class="kw">predict</span>(mod
 <span class="kw">plot</span>(predicted_mod1, residuals_mod1)</code></pre></div>
 <p><img src="assignment2_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
 </div>
-<div id="section-5" class="section level4">
+<div id="section-1" class="section level4">
 <h4 class="hasAnchor">
-<a href="#section-5" class="anchor"></a>2.</h4>
+<a href="#section-1" class="anchor"></a>2.</h4>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Make subset of the variables</span>
 y &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(gala[, <span class="st">"Species"</span>])
 <span class="co"># Create a formula</span>
@@ -229,9 +219,9 @@ resid &lt;-<span class="st"> </span>(y <span class="op">-</span><span class="st"
 <p><img src="assignment2_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
 <p>The results obtained are the same as those obtained from the <code>lm()</code> function</p>
 </div>
-<div id="section-6" class="section level4">
+<div id="section-2" class="section level4">
 <h4 class="hasAnchor">
-<a href="#section-6" class="anchor"></a>3.</h4>
+<a href="#section-2" class="anchor"></a>3.</h4>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(meerkat)
 
 gala_mod &lt;-<span class="st"> </span><span class="kw"><a href="../reference/linear_model.html">linear_model</a></span>(form, gala)
