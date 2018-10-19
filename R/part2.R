@@ -42,7 +42,7 @@ linear_model <- function(formula, data) {
   ## Bring results together into one list
   res <- list(
 
-    "inputs" = init,
+    "inputs" = init$inputs,
     "summary_statistics" = ss,
     "coefficients" = coeff,
     "tests" = tests
@@ -59,25 +59,113 @@ linear_model <- function(formula, data) {
 
 ## Methods for the 'linear_model' class
 
+# Print a summary of the model statistics
+#' @export
 summary.linear_model <- function(x) {
 
+  ## Formula --> character
+  form <- as.character(x$inputs$formula)
+  formchar <- paste0(form[2], " ", form[1], " ", form[3])
 
+  ## Construct individual parts
+  general <- paste0(
+    "Formula: '", formchar, "'", "\n\n"
+  )
+
+  ## num. observations + predictors
+  obs <- paste0("Obs.\tPredictors\n",
+                x$inputs$n, "\t", x$inputs$m, "\n\n")
+
+  ## Summary statistics
+  df <- x$summary_statistics$df
+  n <- x$summary_statistics$n
+
+  ## Format summary stats
+  ss <- x$summary_statistics
+  ss$df <- NULL ; ss$n <- NULL
+
+  ## To matrix
+  ss_bind <- do.call(rbind, ss)
+  rownames(ss_bind) <- c("mean", "variance", "min", "max")
+  ss_bind <- round(ss_bind, digits=2)
+
+  ## Model information
+
+  # Retrieve information from object
+  cf <- mod2$coefficients
+  se <- mod2$tests$coef$standard_errors
+  t <- mod2$tests$coef$t_values
+  p <- mod2$tests$coef$p
+
+  # Bind together
+  modinfo <- do.call(cbind, list(cf, se, t, p))
+  # Round to two digits
+  modinfo <- round(modinfo, digits=4)
+
+  # Message about degrees of freedom
+  minfo <- paste0(
+    "F-statistic: ", round(x$tests$f_test$f_statistic, digits=2),
+    ", p-value: ", x$tests$f_test$p, "\n",
+    "R-squared: ", x$tests$R_squared, "\n",
+    "df: ", df, "\n\n"
+  )
+
+  ## Residuals
+  resids <- summary(x$tests$residuals)
+
+  ## Cat pieces to console
+  cat(general)
+  cat(obs)
+  ## Print list containing the summary statistics matrix
+  print.listof(list("Summary statistics" = ss_bind))
+  # Print
+  print.listof(list("Model information" = modinfo))
+  cat(minfo)
+  print.listof(list("Residuals"=resids))
 
 }
 
+# Print general model information to console
+#' @export
 print.linear_model <- function(x) {
 
-  cat("print")
+  ## Formula --> character
+  form <- as.character(x$inputs$formula)
+  formchar <- paste0(form[2], " ", form[1], " ", form[3])
+
+  ## Construct message
+  msg <- paste0(
+
+    "Linear regression model containing ", x$inputs$m, " predictors and ", x$inputs$n, " observations\n\n",
+    "DV: ", x$inputs$variables$DV, "\n",
+    "IV: ", ifelse(length(x$inputs$variables$IV) > 1,
+                   paste0(x$inputs$variables$IV, collapse= ", "),
+                   x$inputs$variables$IV), "\n\n",
+    "Formula: '", formchar, "'"
+
+  )
+
+  ## Cat message + formatting
+  cat(msg)
 
 }
 
+# Create a residual plot
+#' @export
 plot.linear_model <- function(x) {
 
-
+  ## Plot predicted versus residuals
+  plot(predict(x), resid(x),
+       xlab = "predicted",
+       ylab = "residuals",
+       main = "Predicted versus residuals")
+  ## Add a horizontal line at y=0
+  abline(a = 0, b = 0, col = "red")
 
 }
 
 # Coef method
+#' @export
 coef.linear_model <- function(x) {
 
   x$coefficients
@@ -85,6 +173,7 @@ coef.linear_model <- function(x) {
 }
 
 # Predict method
+#' @export
 predict.linear_model <- function(x) {
 
   x$tests$predicted
@@ -92,11 +181,13 @@ predict.linear_model <- function(x) {
 }
 
 # Residuals & resid method
+#' @export
 residuals.linear_model <- function(x) {
 
   x$tests$residuals
 
 }
+#' @export
 resid.linear_model <- function(x) {
 
   residuals.linear_model(x)
@@ -291,6 +382,12 @@ linear_regression <- function(X, y) {
   ## Apply the linear regression formula
   res <- solve( t(X) %*% X ) %*% t(X) %*% y
 
+  ## Give column names
+  colnames(res) <- "Estimate"
+
+  ## Return
+  return(res)
+
 }
 
 ## Inference
@@ -341,6 +438,9 @@ compute_tests <- function(X, y, coeff, n, m) {
 #   c) https://stat.ethz.ch/pipermail/r-help/2006-September/113115.html
 standard_errors <- function(y, X, coeff, n, m) {
 
+  # Variable names
+  vns <- colnames(X)
+
   # Estimate of the variance
   ssquared <- sum( (y - X %*% coeff) ^ 2 ) / (n - m)
 
@@ -350,6 +450,13 @@ standard_errors <- function(y, X, coeff, n, m) {
   # SE
   SE <- sqrt( diag( vcv ) )
 
+  # To matrix
+  SE <- matrix(SE, ncol = 1)
+
+  # Rownames
+  rownames(SE) <- vns
+  colnames(SE) <- "SE"
+
   # Return
   return(SE)
 
@@ -358,14 +465,24 @@ standard_errors <- function(y, X, coeff, n, m) {
 # Compute t-values given estimate of standard errors and coefficients
 tvalue <- function(coeff, SE) {
 
-  coeff / SE
+  tval <- coeff / SE
+  ## Col names
+  colnames(tval) <- "t"
+
+  # Return
+  return(tval)
 
 }
 
 # Compute p-values of coefficients given t-values
 Pvalues <- function(tvals, df) {
 
-  return(2 * pt( tvals, df, lower.tail = FALSE ))
+  pvals <- 2 * pt( tvals, df, lower.tail = FALSE )
+  ## Colnames
+  colnames(pvals) <- "p"
+
+  # Return
+  return(pvals)
 
 }
 
