@@ -11,6 +11,12 @@ The documentation for this package is also available as a website at [https://ja
 
 Assignment 2 can be viewed [here](https://jasperhg90.github.io/meerkat/articles/assignment2.html)
 
+If you install the package, you can also view the assignment by calling:
+
+```{r}
+vignette("assignment2", library="meerkat")
+```
+
 ## Installation
 
 You can install the package using the `devtools` library:
