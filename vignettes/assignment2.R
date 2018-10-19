@@ -1,9 +1,11 @@
 ## ------------------------------------------------------------------------
+library(meerkat)
 # Create two variables
 CSFI <- c(2,5,5,6,6,7,8,9)
 TFI <- c(1,1,2,3,3,4,5,7,7,8)
 
 # Calculate t-test
+set.seed(500)
 tt1 <- meerkat::t_test(CSFI, TFI, variance_equal = TRUE, 
                        bootstrap_ssize = 0.7, 
                        R=1000)

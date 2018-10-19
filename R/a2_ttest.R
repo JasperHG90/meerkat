@@ -21,7 +21,14 @@
 #'
 #' @author Jasper Ginn
 #'
-#' @return list of class 't_test' containing input variables, summary statistics & test statistics
+#' @return list of class 't_test' containing:
+#' \itemize{
+#'   \item{inputs: }{list containing input variables and optional arguments}
+#'   \item{summary_statistics: }{list containing summary statistics means, variance, number of observations, pooled variance (if applicable)}
+#'   \item{test: }{test statistic, degrees of freedom, p-value}
+#'   \item{CI: }{95\% bootstrapped confidence intervals, the average test statistic and bias compared to the computed t-statistic found under 'test'}
+#' }
+#'
 #' @export
 t_test <- function(x, y, variance_equal = TRUE, ...) {
 

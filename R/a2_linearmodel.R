@@ -6,12 +6,28 @@
 
 #' Fit a linear regression model
 #'
-#' Use linear_model() to fit a linear regression model. The function computes the QR decomposition and returns this as part of the output list.
+#' Use linear_model() to fit a linear regression model. The function also calculates standard errors, p-values, the F-statistic & R-squared
 #'
 #' @param formula an object of class 'formula' or a string that can be coerced to this class. The formula is a symbolic description of the data and should be passed as 'DV ~ IV1 + IV2 + ...' (where DV stands for 'dependent variable' and the IVs are the independent variables). You are also allowed to pass 'DV ~ .' indicating that you will use all all variables in the data as predictors.
 #' @param data data frame containing the variables of interest
 #'
-#' @return
+#' @return list of class 'linear_model' containing:
+#' \itemize{
+#'   \item{inputs: }{user inputs: formula, DV and IV(s), data entered, number of observations (n), number of predictors (m)}
+#'   \item{summary_statistics: }{mean, variance, minimum, maximum for each variable. Also contains the number of observations (n) and the degrees of freedom (df)}
+#'   \item{coefficients: }{estimators for each predictor in the model obtained from the linear regression model}
+#'   \item{tests: }{list containing the results of analysis of the coefficients. Specifically:
+#'     \itemize{
+#'       \item{coef: }{a list containing standard errors, t-values and p-values for the estimators.}
+#'       \item{predicted: }{predicted values.}
+#'       \item{residuals: }{residuals}
+#'       \item{sums_of_squares: }{a list containg the sums of squares (total, model, residual sums of squares)}
+#'       \item{means_of_squares: }{a list containing the mean sums of squares (total, model and residual mean of squares}
+#'       \item{f_test: }{a list containing F-statistic and associated p-value.}
+#'       \item{R_squared: }{unajusted R-squared value}
+#'     }
+#'   }
+#' }
 #'
 #' @seealso
 #'

@@ -80,17 +80,20 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </div>
 <div id="part-i" class="section level2">
 <h2>Part I</h2>
+<p>The code for the t-test can be found <a href="https://github.com/JasperHG90/meerkat/blob/master/R/a2_ttest.R">here</a></p>
 <div id="section" class="section level4">
 <h4>1.</h4>
 <p>See the code I sent to you.</p>
 </div>
 <div id="section-1" class="section level4">
 <h4>2.</h4>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Create two variables</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(meerkat)
+<span class="co"># Create two variables</span>
 CSFI &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">5</span>,<span class="dv">5</span>,<span class="dv">6</span>,<span class="dv">6</span>,<span class="dv">7</span>,<span class="dv">8</span>,<span class="dv">9</span>)
 TFI &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">7</span>,<span class="dv">7</span>,<span class="dv">8</span>)
 
 <span class="co"># Calculate t-test</span>
+<span class="kw">set.seed</span>(<span class="dv">500</span>)
 tt1 &lt;-<span class="st"> </span>meerkat<span class="op">::</span><span class="kw">t_test</span>(CSFI, TFI, <span class="dt">variance_equal =</span> <span class="ot">TRUE</span>, 
                        <span class="dt">bootstrap_ssize =</span> <span class="fl">0.7</span>, 
                        <span class="dt">R=</span><span class="dv">1000</span>)
@@ -110,7 +113,7 @@ tt1</code></pre></div>
 ## 
 ## Bootstrapped 95% CI (Naive bootstrap):
 ## Lower    Upper   Avg.    Bias
-## -0.33    4.48    1.66    0.02</code></pre>
+## -0.49    4.68    1.6 0.08</code></pre>
 <p>The results indicate that there is no statistically different performance between pilots who use traditional flight instructions and pilots who are trained using computer-simulated flight instruction.</p>
 <p>When we compare this to the built-in R function, we get:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">t.test</span>(CSFI, TFI, <span class="dt">var.equal =</span> <span class="ot">TRUE</span>)</code></pre></div>
@@ -148,6 +151,7 @@ tt1</code></pre></div>
 </div>
 <div id="part-ii" class="section level2">
 <h2>PART II</h2>
+<p>The code for the linear model can be found <a href="https://github.com/JasperHG90/meerkat/blob/master/R/a2_linearmodel.R">here</a></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(<span class="st">&quot;gala&quot;</span>)</code></pre></div>
 <div id="section-4" class="section level4">
 <h4>1.</h4>
