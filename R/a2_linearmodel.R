@@ -113,10 +113,25 @@ summary.linear_model <- function(x) {
   t <- x$tests$coef$t_values
   p <- x$tests$coef$p
 
+  ## Make significance codes for p-values
+  sig <- ifelse(p > 0.1, '',
+                ifelse(p <= 0.1 & p > 0.05, '.',
+                       ifelse(p <= 0.05 & p > 0.01, '*',
+                              ifelse(p <= 0.01 & p > 0.001, '**',
+                                     '***'))))
+  # To matrix
+  sig <- matrix(sig, ncol=1)
+  colnames(sig) <- "Sig."
+
+  ## Make explanation for significance codes
+  sig_exp <- "Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\n"
+
   # Bind together
-  modinfo <- do.call(cbind, list(cf, se, t, p))
+  modinfo <- do.call(cbind.data.frame, list(cf, se, t, p))
   # Round to two digits
   modinfo <- round(modinfo, digits=4)
+  # Add significance codes
+  modinfo <- cbind(modinfo, sig)
 
   # Message about degrees of freedom
   minfo <- paste0(
@@ -136,6 +151,7 @@ summary.linear_model <- function(x) {
   print.listof(list("Summary statistics" = ss_bind))
   # Print
   print.listof(list("Model information" = modinfo))
+  cat(sig_exp)
   cat(minfo)
   print.listof(list("Residuals"=resids))
 
