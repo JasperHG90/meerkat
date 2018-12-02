@@ -534,7 +534,7 @@ standard_errors <- function(y, X, coeff, n, m) {
   SE <- sqrt( diag( vcv ) )
 
   # To matrix
-  SE <- matrix(SE, ncol = 1)
+  SE <- matrix( SE, ncol = 1 )
 
   # Rownames
   rownames(SE) <- vns
