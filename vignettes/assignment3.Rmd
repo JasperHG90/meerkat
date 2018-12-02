@@ -115,4 +115,4 @@ emp <- emp_power(ref_mu=150, n=50, mu=160, sd=15, alternative="greater", R=1000)
 emp$power
 ```
 
-The empirical power calculation is less conservative than the theoretical implementation. 
+The empirical power calculation is less conservative than the theoretical implementation. Both display a high degree of power given the parameters.
