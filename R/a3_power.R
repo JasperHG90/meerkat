@@ -4,13 +4,19 @@
 #'
 #' This function takes a reference mean value, sample size, mean, standard deviation, significance level and computes the empirical power of R randomly drawn normally distributed samples with mean mu, standard deviation sd and sample size n. It then calculates R t.tests with reference to the
 #'
-#' @param ref_mu numeric. This is a value indicating the true value of the mean (or difference in means if you are performing a two sample test). See ?t.test() for more information
 #' @param n numeric. sample size
 #' @param mu mean value used to draw random normal samples. See ?rnorm() for more information
 #' @param sd standard deviation used to draw random normal samples
 #' @param alpha significance level
 #' @param R number of replications
-#' @param ... optional arguments. You may pass selected parameters from the t.test() function.
+#' @param ... optional arguments. You may pass selected parameters from the t.test() function. You may also pass the following parameters:
+#' \itemize{
+#'   \item{n0: numeric. sample size of control group if running a two-sample t-test}
+#'   \item{mu0: numeric. mean of control group if running a two-sample t-test}
+#'   \item{sd0: numeric. standard deviation of control group if running a two-sample t-test}
+#'   \item{ref_mu} numeric. This is a value indicating the true value of the mean (or difference in means if you are performing a one sample test). See ?t.test() for more information
+#' }
+#' Note that you are required to either pass all parameters related to the control group (n0, mu0, sd0) or a parameter related to the reference mean (ref_mu).
 #'
 #' @return list containing:
 #' \itemize{
@@ -22,44 +28,33 @@
 #'
 #' @seealso Rizzo, Maria L. 'Statistical Computing with R. Chapman and Hall/CRC, 2007'. (pp. 167-169)
 #' @export
-emp_power <- function(ref_mu, n, mu, sd, alpha=0.05, R = 1000, ...) {
-
-  # Type checks
-  if(!all(vapply(c(n, ref_mu, mu, sd, R), function(x) is(x)[1], "char") == "numeric")) {
-
-    stop("Parameters 'n', 'ref_mu', 'mu', 'sd', 'R' must be numeric")
-
-  }
-
-  ## Check if experiment/control contain the right parameters and if legal
-
-  ## Save inputs
-  inputs <- list(
-    "n" = n,
-    "ref_mu" = ref_mu,
-    "mu" = mu,
-    "sd" = sd,
-    "R" = R
-  )
+emp_power <- function(n, mu, sd, alpha=0.05, R = 1000, ...) {
 
   ## Get optional params
   # (for t-test etc.)
   opts <- list(...)
-  alternative <- ifelse("alternative" %in% names(opts), opts$alternative, "two.sided")
 
-  # Checks
-  if(!alternative %in% c('two.sided', 'less', 'greater')) {
-    stop("'alternative' must be one of 'one.sided', 'less' or 'greater'. See '?t.test' for more information")
+  # Check inputs
+  inputs <- perform_checks(n, mu, sd, alpha, R, opts)
+
+  ## Generate data --> if two-sample, need two samples
+  data <- generate_data(inputs$n, inputs$mu, inputs$sd, inputs$R)
+  if(inputs$type == "two_sample") {
+    ## Control sample
+    data_control <- generate_data(inputs$n0, inputs$mu0, inputs$sd0, inputs$R)
+    ## Perform test R times
+    test_out <- rep_t_test(data, inputs$R, inputs$type, inputs$alternative,
+                           data_control = data_control)
+    ## Save data in data list
+    data <- list(
+      "data" = data,
+      "control" = data_control
+    )
+  } else {
+    ## One-sample
+    test_out <- rep_t_test(data, inputs$R, inputs$type, inputs$alternative,
+                           mu0 = inputs$ref_mu)
   }
-
-  # Add to inputs
-  inputs$alternative <- alternative
-
-  ## Generate data
-  data <- generate_data(n, mu, sd, R)
-
-  ## Perform test R times
-  test_out <- rep_t_test(data, R, ref_mu, alternative)
 
   # Check % of p-values <= confidence level
   power <- mean(test_out <= alpha)
@@ -76,6 +71,71 @@ emp_power <- function(ref_mu, n, mu, sd, alpha=0.05, R = 1000, ...) {
 }
 
 # HELPER FUNCTIONS ----
+
+# Perform checks
+perform_checks <- function(n, mu, sd, alpha, R, opts) {
+
+  ## Save inputs
+  inputs <- list(
+    "n" = n,
+    "mu" = mu,
+    "sd" = sd,
+    "R" = R,
+    "alpha" = alpha
+  )
+
+  # Retrieve optional arguments from options list
+  alternative <- ifelse("alternative" %in% names(opts), opts$alternative, "two.sided")
+  ref_mu <- ifelse("ref_mu" %in% names(opts), opts$ref_mu, NA)
+  mu0 <- ifelse("mu0" %in% names(opts), opts$mu0, NA)
+  n0 <- ifelse("n0" %in% names(opts), opts$n0, NA)
+  sd0 <- ifelse("sd0" %in% names(opts), opts$sd0, NA)
+
+  # Based on inputs, determine if two sample or one sample
+  if(!is.na(ref_mu)) {
+    tttype <- "one_sample"
+    inputs$ref_mu <- ref_mu
+    inputs$type <- tttype
+  } else if(!is.na(mu0)) {
+    # Set values of control to that of experiment group
+    tttype <- "two_sample"
+    n0 <- ifelse(!is.na(n0), n0, n)
+    sd0 <- ifelse(!is.na(sd0), sd0, sd)
+    inputs$mu0 <- mu0
+    inputs$n0 <- n0
+    inputs$sd0 <- sd0
+    inputs$type <- tttype
+  } else {
+    # Raise error
+    stop("You must supply either the reference mean value or, at the least, a mean value for a control group")
+  }
+
+  # Checks
+  if(!alternative %in% c('two.sided', 'less', 'greater')) {
+    stop("'alternative' must be one of 'one.sided', 'less' or 'greater'. See '?t.test' for more information")
+  }
+
+  # Construct vector with variables to check
+  if(tttype == "one_sample") {
+    check_me <- c(ref_mu, n, mu, sd, R, alpha)
+  } else {
+    check_me <- c(n, mu, sd, R, mu0, sd0, n0, alpha)
+  }
+
+  # Type checks
+  if(!all(vapply(check_me, function(x) is(x)[1], "char") == "numeric")) {
+
+    stop("Parameters 'n', 'ref_mu', 'mu', 'sd', 'R' must be numeric")
+
+  }
+
+  # Add to inputs
+  inputs$alternative <- alternative
+
+  # Return inputs list
+  return(inputs)
+
+}
 
 # Generate a matrix of n rows and R columns. The matrix is populated with n * R values drawn from a random distribution using rnorm()
 #
@@ -102,19 +162,49 @@ generate_data <- function(n, mu, sd, R) {
 # @param alternative string. indicate whether you want two-sided or one-sided test
 #
 # @return vector containing p-values
-rep_t_test <- function(data, R, mu0, alternative) {
+rep_t_test <- function(data, R, type = c("one_sample", "two_sample"),
+                       alternative, ...) {
 
-  # Apply over data
-  apply(data,2, function(x) {
+  type <- match.arg(type)
+  opts <- list(...)
 
-    # Perform test
-    tst <- t.test(x,
-                  alternative=alternative,
-                  mu = mu0)
+  # Based on type, retrieve params and perform test
+  if(type == "one_sample") {
 
-    # Return results
-    tst$p.value
+    mu0 <- opts$mu0
+    # Apply over data
+    apply(data,2, function(x) {
 
-  })
+      # Perform test
+      tst <- t.test(x,
+                    alternative=alternative,
+                    mu = mu0)
+
+      # Return results
+      tst$p.value
+
+    })
+
+  } else {
+
+    ## Two samples
+    data_control <- opts$data_control
+
+    out <- numeric(R)
+    for(i in seq_along(R)){
+
+      # Perform test
+      tst <- t.test(data[,i],
+                    data_control[,i],
+                    alternative=alternative,
+                    var.equal = TRUE)
+      # Return results
+      out[i] <- tst$p.value
+
+    }
+
+    return(out)
+
+  }
 
 }

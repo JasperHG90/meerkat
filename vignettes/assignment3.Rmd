@@ -37,7 +37,7 @@ The one-tailed test is statistically significant (p<0.0001). At a significance l
 
 *Power* is defined as the probability $\pi(\theta)$ of rejecting the null hypothesis given that the alternative hypothesis is true.^[Rizzo, Maria L. "Statistical Computing with R". Chapman and Hall/CRC, 2007]. The probability of making a Type II error (wrongfully concluding that there is no effect while an effect exists) is $1-\pi(\theta))$. A common maximum value for the Type II error is that we should not commit it in more than 20\% of cases. Hence, the 'minimum' power we should strive for is $0.8$, meaning that we can detect effects $4$ out of $5$ times. 
 
-The function `emp_power()` calculates, for a given $R$ number of repititions, the t-statistic between the mean value of the control group and that of a random sample drawn from the normal distribution. Given that we are interested in the probability $\pi(\theta)$, one reasonable approach is to take the proportion of cases where the null hypothesis is rejected and the p-value of the t-test is lower than the significance level $\alpha$.
+The function `emp_power()` calculates, for a given $R$ number of repititions, the t-statistic between the mean value of the control group and that of a random sample drawn from the normal distribution. Given that we are interested in the probability $\pi(\theta)$, a reasonable approach is to take the proportion of cases where the null hypothesis is rejected. 
 
 Given that we draw data from a normal distribution and for values where $\theta_0 < \theta_1$, we may be confident that the power of our test increases as we:
 
@@ -84,12 +84,14 @@ for( i in seq_along(grids) ) {
   
   # In data frame
   df <- data.frame("grid" = grid,
-                   "power" = pv)
+                   "power" = pv,
+                   "se" = sapply(power_values, function(x) x$se))
   
   # Plot
   grids_out[[i]] <- ggplot(df, aes(x=grid, y=power)) +
     geom_line() +
     geom_point() +
+    geom_errorbar(aes(ymin=power - se, ymax=power + se)) + 
     theme_bw() +
     scale_x_continuous(name = strsplit(grids_in_name, "_")[[1]][2]) +
     scale_y_continuous(name = "Power")
@@ -105,13 +107,14 @@ grid.arrange(grids_out[[1]], grids_out[[2]],
 If we compare the results from the empirical test to the R function, we observe:
 
 ```{r}
-power.t.test(n=50, delta=10, sd=15, sig.level = 0.05, alternative="one.sided")
+power.t.test(n=50, delta=5, sd=15, type="one.sample", 
+             sig.level = 0.05, alternative="one.sided")
 ```
 
 and
 
 ```{r}
-emp <- emp_power(ref_mu=150, n=50, mu=160, sd=15, alternative="greater", R=1000)
+emp <- emp_power(ref_mu=150, n=50, mu=155, sd=15, alternative="greater", R=1000)
 emp$power
 ```
 
