@@ -3,4 +3,5 @@ pkgdown: 1.1.0
 pkgdown_sha: ~
 articles:
   assignment2: assignment2.html
+  assignment3: assignment3.html
 
