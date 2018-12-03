@@ -4,11 +4,10 @@
 \alias{emp_power}
 \title{Empirical power of a t-test}
 \usage{
-emp_power(ref_mu, n, mu, sd, alpha = 0.05, R = 1000, ...)
+emp_power(n, mu, sd, alpha = 0.05, R = 1000, type = c("one_sample",
+  "two_sample"), ...)
 }
 \arguments{
-\item{ref_mu}{numeric. This is a value indicating the true value of the mean (or difference in means if you are performing a two sample test). See ?t.test() for more information}
-
 \item{n}{numeric. sample size}
 
 \item{mu}{mean value used to draw random normal samples. See ?rnorm() for more information}
@@ -19,7 +18,15 @@ emp_power(ref_mu, n, mu, sd, alpha = 0.05, R = 1000, ...)
 
 \item{R}{number of replications}
 
-\item{...}{optional arguments. You may pass selected parameters from the t.test() function.}
+\item{type}{string. if 'one_sample', then a one-sample t-test, else a two-sample t-test}
+
+\item{...}{optional arguments. You may pass selected parameters from the t.test() function. You may also pass the following parameters:
+\itemize{
+  \item{mu0: numeric. mean of control group if running a two-sample t-test or, if type = "one_sample", a value indicating the true value of the mean (or difference in means if you are performing a one sample test). See ?t.test() for more information},
+  \item{n0: numeric. sample size of control group if running a two-sample t-test. If not supplied then the function will use the value of n defined above.}
+  \item{sd0: numeric. standard deviation of control group if running a two-sample t-test. If not supplied then the function will use the value of sd defined above.}
+}
+Note that you are required to either pass all parameters related to the control group (n0, mu0, sd0) or a parameter related to the reference mean (ref_mu).}
 }
 \value{
 list containing:

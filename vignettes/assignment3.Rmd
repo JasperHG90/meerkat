@@ -15,6 +15,8 @@ The code in this package is stored in the 'meerkat' package. It contains helper 
 
 ## PART I
 
+View the code belonging to this assignment [here](https://github.com/JasperHG90/meerkat/blob/master/R/a3_power.R)
+
 *1. Assuming that the data are approximately normal, simulate one sample of data and perform a t-test using the R in-built t-test function. What is the p-value of the test? What is your conclusion?.*
 
 ```{r}
@@ -24,11 +26,14 @@ library(meerkat)
 # Set values and draw a sample
 n <- 50
 mu <- 160
+mu0 <- 150
 sd <- 15
 set.seed(600)
-exp <- rnorm(n, mu, sd)
+x <- rnorm(n, mu, sd)
+set.seed(500)
+y <- rnorm(n, mu0, sd)
 # We perform a t-test on the data
-t.test(exp, alternative="greater", mu = 150)
+t.test(x, y, alternative="greater", var.equal = TRUE)
 ```
 
 The one-tailed test is statistically significant (p<0.0001). At a significance level of a=0.05 we would therefore reject the null that there is no difference in the test scores of these groups. The experimental group , it would seem, performed better than the control and the special training has had the desired effect.
@@ -37,7 +42,7 @@ The one-tailed test is statistically significant (p<0.0001). At a significance l
 
 *Power* is defined as the probability $\pi(\theta)$ of rejecting the null hypothesis given that the alternative hypothesis is true.^[Rizzo, Maria L. "Statistical Computing with R". Chapman and Hall/CRC, 2007]. The probability of making a Type II error (wrongfully concluding that there is no effect while an effect exists) is $1-\pi(\theta))$. A common maximum value for the Type II error is that we should not commit it in more than 20\% of cases. Hence, the 'minimum' power we should strive for is $0.8$, meaning that we can detect effects $4$ out of $5$ times. 
 
-The function `emp_power()` calculates, for a given $R$ number of repititions, the t-statistic between the mean value of the control group and that of a random sample drawn from the normal distribution. Given that we are interested in the probability $\pi(\theta)$, a reasonable approach is to take the proportion of cases where the null hypothesis is rejected. 
+The function `emp_power()` calculates, for a given $R$ number of repititions, the t-statistic between the mean value of the control group and that of a random sample drawn from the normal distribution. Given that we are interested in the probability $\pi(\theta)$, a reasonable approach is to take the proportion of cases where the null hypothesis is rejected. In this case, if the true difference of means is $0$, we would still expect to achieve a power of 5\% because of the Type I error rate.
 
 Given that we draw data from a normal distribution and for values where $\theta_0 < \theta_1$, we may be confident that the power of our test increases as we:
 
@@ -60,7 +65,7 @@ grids <- list(
 )
 
 grids_out <- vector("list", length = 4)
-# For each value, calculate the power od the t-test while holding the other parameters constant
+# For each value, calculate the power of the t-test while holding the other parameters constant
 for( i in seq_along(grids) ) {
   
   # Get name
@@ -69,14 +74,14 @@ for( i in seq_along(grids) ) {
   
   # This switch is a wrapper for a bunch of if/else statements
   power_values <- switch(grids_in_name,
-         grid_mu = lapply(grid, function(x) emp_power(150, 50, x, 15, 
-                                                      alpha=0.05, alternative="greater")),
-         grid_n = lapply(grid, function(x) emp_power(150, x, 155, 15, 
-                                                     alpha=0.05, alternative="greater")),
-         grid_sd = lapply(grid, function(x) emp_power(150, 50, 155, x, 
-                                                      alpha=0.05, alternative="greater")),
-         grid_alpha = lapply(grid, function(x) emp_power(150, 50, 155, 15, 
-                                                         alpha=x, alternative="greater"))
+         grid_mu = lapply(grid, function(x) emp_power(50, x, 15, R=1000, type="two_sample",
+                                                      alpha=0.05, alternative="greater", mu0=150)),
+         grid_n = lapply(grid, function(x) emp_power(x, 155, 15, R=1000, type="two_sample", 
+                                                     alpha=0.05, alternative="greater", mu0=150)),
+         grid_sd = lapply(grid, function(x) emp_power(50, 155, x, R=1000, type="two_sample",
+                                                      alpha=0.05, alternative="greater", mu0=150)),
+         grid_alpha = lapply(grid, function(x) emp_power(50, 155, 15, R=1000, type="two_sample",
+                                                         alpha=x, alternative="greater", mu0=150))
   )
   
   # Get values
@@ -100,22 +105,30 @@ for( i in seq_along(grids) ) {
 
 # Plot
 grid.arrange(grids_out[[1]], grids_out[[2]],
-             grids_out[[3]], grids_out[[4]], ncol=2, nrow=2)
+             grids_out[[3]], grids_out[[4]], 
+             ncol=2, nrow=2)
 
 ```
 
 If we compare the results from the empirical test to the R function, we observe:
 
 ```{r}
-power.t.test(n=50, delta=5, sd=15, type="one.sample", 
+power.t.test(n=50, delta=10, sd=15, type="two.sample", 
              sig.level = 0.05, alternative="one.sided")
 ```
 
 and
 
 ```{r}
-emp <- emp_power(ref_mu=150, n=50, mu=155, sd=15, alternative="greater", R=1000)
+set.seed(700)
+emp <- emp_power(n=50, mu=160, sd=15, alpha=0.05, type="two_sample",
+                 alternative="greater", R=1000, mu0=150)
 emp$power
 ```
 
 The empirical power calculation is less conservative than the theoretical implementation. Both display a high degree of power given the parameters.
+
+
+
+## PART II
+

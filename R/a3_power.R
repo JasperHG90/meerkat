@@ -9,12 +9,12 @@
 #' @param sd standard deviation used to draw random normal samples
 #' @param alpha significance level
 #' @param R number of replications
+#' @param type string. if 'one_sample', then a one-sample t-test, else a two-sample t-test
 #' @param ... optional arguments. You may pass selected parameters from the t.test() function. You may also pass the following parameters:
 #' \itemize{
-#'   \item{n0: numeric. sample size of control group if running a two-sample t-test}
-#'   \item{mu0: numeric. mean of control group if running a two-sample t-test}
-#'   \item{sd0: numeric. standard deviation of control group if running a two-sample t-test}
-#'   \item{ref_mu} numeric. This is a value indicating the true value of the mean (or difference in means if you are performing a one sample test). See ?t.test() for more information
+#'   \item{mu0: numeric. mean of control group if running a two-sample t-test or, if type = "one_sample", a value indicating the true value of the mean (or difference in means if you are performing a one sample test). See ?t.test() for more information},
+#'   \item{n0: numeric. sample size of control group if running a two-sample t-test. If not supplied then the function will use the value of n defined above.}
+#'   \item{sd0: numeric. standard deviation of control group if running a two-sample t-test. If not supplied then the function will use the value of sd defined above.}
 #' }
 #' Note that you are required to either pass all parameters related to the control group (n0, mu0, sd0) or a parameter related to the reference mean (ref_mu).
 #'
@@ -28,14 +28,16 @@
 #'
 #' @seealso Rizzo, Maria L. 'Statistical Computing with R. Chapman and Hall/CRC, 2007'. (pp. 167-169)
 #' @export
-emp_power <- function(n, mu, sd, alpha=0.05, R = 1000, ...) {
+emp_power <- function(n, mu, sd, alpha=0.05, R = 1000, type=c("one_sample", "two_sample"), ...) {
+
+  type <- match.arg(type)
 
   ## Get optional params
   # (for t-test etc.)
   opts <- list(...)
 
   # Check inputs
-  inputs <- perform_checks(n, mu, sd, alpha, R, opts)
+  inputs <- perform_checks_ep(n, mu, sd, alpha, R, type, opts)
 
   ## Generate data --> if two-sample, need two samples
   data <- generate_data(inputs$n, inputs$mu, inputs$sd, inputs$R)
@@ -53,7 +55,7 @@ emp_power <- function(n, mu, sd, alpha=0.05, R = 1000, ...) {
   } else {
     ## One-sample
     test_out <- rep_t_test(data, inputs$R, inputs$type, inputs$alternative,
-                           mu0 = inputs$ref_mu)
+                           mu0 = inputs$mu0)
   }
 
   # Check % of p-values <= confidence level
@@ -73,7 +75,7 @@ emp_power <- function(n, mu, sd, alpha=0.05, R = 1000, ...) {
 # HELPER FUNCTIONS ----
 
 # Perform checks
-perform_checks <- function(n, mu, sd, alpha, R, opts) {
+perform_checks_ep <- function(n, mu, sd, alpha, R, type, opts) {
 
   ## Save inputs
   inputs <- list(
@@ -86,28 +88,25 @@ perform_checks <- function(n, mu, sd, alpha, R, opts) {
 
   # Retrieve optional arguments from options list
   alternative <- ifelse("alternative" %in% names(opts), opts$alternative, "two.sided")
-  ref_mu <- ifelse("ref_mu" %in% names(opts), opts$ref_mu, NA)
   mu0 <- ifelse("mu0" %in% names(opts), opts$mu0, NA)
   n0 <- ifelse("n0" %in% names(opts), opts$n0, NA)
   sd0 <- ifelse("sd0" %in% names(opts), opts$sd0, NA)
 
+  # Check if mu0 supplied
+  if(is.null(mu0)) stop("'mu0' not supplied but is required")
+
   # Based on inputs, determine if two sample or one sample
-  if(!is.na(ref_mu)) {
-    tttype <- "one_sample"
-    inputs$ref_mu <- ref_mu
-    inputs$type <- tttype
-  } else if(!is.na(mu0)) {
+  if(type == "one_sample") {
+    inputs$mu0 <- mu0
+    inputs$type <- type
+  } else {
     # Set values of control to that of experiment group
-    tttype <- "two_sample"
     n0 <- ifelse(!is.na(n0), n0, n)
     sd0 <- ifelse(!is.na(sd0), sd0, sd)
     inputs$mu0 <- mu0
     inputs$n0 <- n0
     inputs$sd0 <- sd0
-    inputs$type <- tttype
-  } else {
-    # Raise error
-    stop("You must supply either the reference mean value or, at the least, a mean value for a control group")
+    inputs$type <- type
   }
 
   # Checks
@@ -116,8 +115,8 @@ perform_checks <- function(n, mu, sd, alpha, R, opts) {
   }
 
   # Construct vector with variables to check
-  if(tttype == "one_sample") {
-    check_me <- c(ref_mu, n, mu, sd, R, alpha)
+  if(type == "one_sample") {
+    check_me <- c(mu0, n, mu, sd, R, alpha)
   } else {
     check_me <- c(n, mu, sd, R, mu0, sd0, n0, alpha)
   }
@@ -125,7 +124,7 @@ perform_checks <- function(n, mu, sd, alpha, R, opts) {
   # Type checks
   if(!all(vapply(check_me, function(x) is(x)[1], "char") == "numeric")) {
 
-    stop("Parameters 'n', 'ref_mu', 'mu', 'sd', 'R' must be numeric")
+    stop("Parameters 'n', 'mu0', 'mu', 'sd', 'R', 'alpha' must be numeric")
 
   }
 
@@ -191,7 +190,7 @@ rep_t_test <- function(data, R, type = c("one_sample", "two_sample"),
     data_control <- opts$data_control
 
     out <- numeric(R)
-    for(i in seq_along(R)){
+    for(i in seq_along(1:R)){
 
       # Perform test
       tst <- t.test(data[,i],
