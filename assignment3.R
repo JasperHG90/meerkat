@@ -6,6 +6,14 @@
 CSFI <- c(2,5,5,6,6,7,8,9)
 TFI <- c(1,1,2,3,3,4,5,7,7,8)
 
+CSFI[order(runif(length(CSFI)))]
+
+# Run
+pt <- resample_test(CSFI, TFI, 2000, TRUE)
+pt
+plot(pt)
+t.test(CSFI, TFI)
+
 # a)
 
 # Formula for permutation/bootstrap test
@@ -161,11 +169,7 @@ print.resample_test <- function(object) {
 
 }
 
-# Run
-pt <- resample_test(CSFI, TFI, 2000, TRUE)
-pt
-plot(pt)
-t.test(CSFI, TFI)
+
 
 # b)
 
