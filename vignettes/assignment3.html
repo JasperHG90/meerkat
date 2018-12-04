@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="Jasper Ginn" />
+
+<meta name="date" content="2018-12-04" />
+
+<title>Assignment 3</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+
+
+<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Assignment 3</h1>
+<h4 class="author"><em>Jasper Ginn</em></h4>
+<h4 class="date"><em>2018-12-04</em></h4>
+
+
+
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>The code in this package is stored in the ‘meerkat’ package. It contains helper functions that are not exported and for which no visible documentation was written. At the start of each part, I give a link to the R-code hosted on GitHub where you can view the code.</p>
+</div>
+<div id="part-i" class="section level2">
+<h2>PART I</h2>
+<p>View the code belonging to this assignment <a href="https://github.com/JasperHG90/meerkat/blob/master/R/a3_power.R">here</a></p>
+<p><em>1. Assuming that the data are approximately normal, simulate one sample of data and perform a t-test using the R in-built t-test function. What is the p-value of the test? What is your conclusion?.</em></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">rm</span>(<span class="dt">list=</span><span class="kw">ls</span>())
+<span class="kw">library</span>(meerkat)
+
+<span class="co"># Set values and draw a sample</span>
+n &lt;-<span class="st"> </span><span class="dv">50</span>
+mu &lt;-<span class="st"> </span><span class="dv">160</span>
+mu0 &lt;-<span class="st"> </span><span class="dv">150</span>
+sd &lt;-<span class="st"> </span><span class="dv">15</span>
+<span class="kw">set.seed</span>(<span class="dv">600</span>)
+x &lt;-<span class="st"> </span><span class="kw">rnorm</span>(n, mu, sd)
+<span class="kw">set.seed</span>(<span class="dv">500</span>)
+y &lt;-<span class="st"> </span><span class="kw">rnorm</span>(n, mu0, sd)
+<span class="co"># We perform a t-test on the data</span>
+<span class="kw">t.test</span>(x, y, <span class="dt">alternative=</span><span class="st">&quot;greater&quot;</span>, <span class="dt">var.equal =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<pre><code>## 
+##  Two Sample t-test
+## 
+## data:  x and y
+## t = 3.7003, df = 98, p-value = 0.0001778
+## alternative hypothesis: true difference in means is greater than 0
+## 95 percent confidence interval:
+##  6.154347      Inf
+## sample estimates:
+## mean of x mean of y 
+##  160.6356  149.4711</code></pre>
+<p>The one-tailed test is statistically significant (p&lt;0.0001). At a significance level of a=0.05 we would therefore reject the null that there is no difference in the test scores of these groups. The experimental group , it would seem, performed better than the control and the special training has had the desired effect.</p>
+<p><strong>2. Assume that the data are normally distributed, write a function that generates data and performs a t-test 1000 times and that stores the values of the t-statistic (or the p-value) in a vector. Thinking about the definition of power in terms of rejecting the null hypothesis, how would you obtain an estimate of the power in this situation? Compare your results with those given by power.t.test</strong></p>
+<p><em>Power</em> is defined as the probability <span class="math inline">\(\pi(\theta)\)</span> of rejecting the null hypothesis given that the alternative hypothesis is true.<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>. The probability of making a Type II error (wrongfully concluding that there is no effect while an effect exists) is <span class="math inline">\(1-\pi(\theta))\)</span>. A common maximum value for the Type II error is that we should not commit it in more than 20% of cases. Hence, the ‘minimum’ power we should strive for is <span class="math inline">\(0.8\)</span>, meaning that we can detect effects <span class="math inline">\(4\)</span> out of <span class="math inline">\(5\)</span> times.</p>
+<p>The function <code>emp_power()</code> calculates, for a given <span class="math inline">\(R\)</span> number of repititions, the t-statistic between the mean value of the control group and that of a random sample drawn from the normal distribution. Given that we are interested in the probability <span class="math inline">\(\pi(\theta)\)</span>, a reasonable approach is to take the proportion of cases where the null hypothesis is rejected. In this case, if the true difference of means is <span class="math inline">\(0\)</span>, we would still expect to achieve a power of 5% because of the Type I error rate.</p>
+<p>Given that we draw data from a normal distribution and for values where <span class="math inline">\(\theta_0 &lt; \theta_1\)</span>, we may be confident that the power of our test increases as we:</p>
+<ol style="list-style-type: decimal">
+<li>increase the sample size</li>
+<li>increase the significance level <span class="math inline">\(\alpha\)</span> (e.g. from <span class="math inline">\(0.05\)</span> to <span class="math inline">\(0.1\)</span>)</li>
+<li>decrease the standard deviation in the sample</li>
+</ol>
+<p>The effect of changing these values is shown in the plots below</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2)
+<span class="kw">library</span>(grid)
+<span class="kw">library</span>(gridExtra)
+<span class="co"># Define a grid of possible mean values from 140 to 160</span>
+grids &lt;-<span class="st"> </span><span class="kw">list</span>(
+  <span class="dt">grid_mu =</span> <span class="kw">seq</span>(<span class="dv">140</span>, <span class="dv">160</span>, <span class="dv">1</span>),
+  <span class="dt">grid_sd =</span> <span class="kw">seq</span>(<span class="dv">5</span>, <span class="dv">15</span>, <span class="fl">0.5</span>),
+  <span class="dt">grid_alpha =</span> <span class="kw">seq</span>(<span class="fl">0.01</span>, <span class="fl">0.11</span>, <span class="fl">0.005</span>),
+  <span class="dt">grid_n =</span> <span class="kw">seq</span>(<span class="dv">50</span>, <span class="dv">150</span>, <span class="dv">5</span>)
+)
+
+grids_out &lt;-<span class="st"> </span><span class="kw">vector</span>(<span class="st">&quot;list&quot;</span>, <span class="dt">length =</span> <span class="dv">4</span>)
+<span class="co"># For each value, calculate the power of the t-test while holding the other parameters constant</span>
+<span class="cf">for</span>( i <span class="cf">in</span> <span class="kw">seq_along</span>(grids) ) {
+  
+  <span class="co"># Get name</span>
+  grids_in_name &lt;-<span class="st"> </span><span class="kw">names</span>(grids)[i]
+  grid &lt;-<span class="st"> </span>grids[[i]]
+  
+  <span class="co"># This switch is a wrapper for a bunch of if/else statements</span>
+  power_values &lt;-<span class="st"> </span><span class="cf">switch</span>(grids_in_name,
+         <span class="dt">grid_mu =</span> <span class="kw">lapply</span>(grid, <span class="cf">function</span>(x) <span class="kw">emp_power</span>(<span class="dv">50</span>, x, <span class="dv">15</span>, <span class="dt">R=</span><span class="dv">1000</span>, <span class="dt">type=</span><span class="st">&quot;two_sample&quot;</span>,
+                                                      <span class="dt">alpha=</span><span class="fl">0.05</span>, <span class="dt">alternative=</span><span class="st">&quot;greater&quot;</span>, <span class="dt">mu0=</span><span class="dv">150</span>)),
+         <span class="dt">grid_n =</span> <span class="kw">lapply</span>(grid, <span class="cf">function</span>(x) <span class="kw">emp_power</span>(x, <span class="dv">155</span>, <span class="dv">15</span>, <span class="dt">R=</span><span class="dv">1000</span>, <span class="dt">type=</span><span class="st">&quot;two_sample&quot;</span>, 
+                                                     <span class="dt">alpha=</span><span class="fl">0.05</span>, <span class="dt">alternative=</span><span class="st">&quot;greater&quot;</span>, <span class="dt">mu0=</span><span class="dv">150</span>)),
+         <span class="dt">grid_sd =</span> <span class="kw">lapply</span>(grid, <span class="cf">function</span>(x) <span class="kw">emp_power</span>(<span class="dv">50</span>, <span class="dv">155</span>, x, <span class="dt">R=</span><span class="dv">1000</span>, <span class="dt">type=</span><span class="st">&quot;two_sample&quot;</span>,
+                                                      <span class="dt">alpha=</span><span class="fl">0.05</span>, <span class="dt">alternative=</span><span class="st">&quot;greater&quot;</span>, <span class="dt">mu0=</span><span class="dv">150</span>)),
+         <span class="dt">grid_alpha =</span> <span class="kw">lapply</span>(grid, <span class="cf">function</span>(x) <span class="kw">emp_power</span>(<span class="dv">50</span>, <span class="dv">155</span>, <span class="dv">15</span>, <span class="dt">R=</span><span class="dv">1000</span>, <span class="dt">type=</span><span class="st">&quot;two_sample&quot;</span>,
+                                                         <span class="dt">alpha=</span>x, <span class="dt">alternative=</span><span class="st">&quot;greater&quot;</span>, <span class="dt">mu0=</span><span class="dv">150</span>))
+  )
+  
+  <span class="co"># Get values</span>
+  pv &lt;-<span class="st"> </span><span class="kw">sapply</span>(power_values, <span class="cf">function</span>(x) x<span class="op">$</span>power)
+  
+  <span class="co"># In data frame</span>
+  df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="st">&quot;grid&quot;</span> =<span class="st"> </span>grid,
+                   <span class="st">&quot;power&quot;</span> =<span class="st"> </span>pv,
+                   <span class="st">&quot;se&quot;</span> =<span class="st"> </span><span class="kw">sapply</span>(power_values, <span class="cf">function</span>(x) x<span class="op">$</span>se))
+  
+  <span class="co"># Plot</span>
+  grids_out[[i]] &lt;-<span class="st"> </span><span class="kw">ggplot</span>(df, <span class="kw">aes</span>(<span class="dt">x=</span>grid, <span class="dt">y=</span>power)) <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_line</span>() <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_point</span>() <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_errorbar</span>(<span class="kw">aes</span>(<span class="dt">ymin=</span>power <span class="op">-</span><span class="st"> </span>se, <span class="dt">ymax=</span>power <span class="op">+</span><span class="st"> </span>se)) <span class="op">+</span><span class="st"> </span>
+<span class="st">    </span><span class="kw">theme_bw</span>() <span class="op">+</span>
+<span class="st">    </span><span class="kw">scale_x_continuous</span>(<span class="dt">name =</span> <span class="kw">strsplit</span>(grids_in_name, <span class="st">&quot;_&quot;</span>)[[<span class="dv">1</span>]][<span class="dv">2</span>]) <span class="op">+</span>
+<span class="st">    </span><span class="kw">scale_y_continuous</span>(<span class="dt">name =</span> <span class="st">&quot;Power&quot;</span>)
+  
+}
+
+<span class="co"># Plot</span>
+<span class="kw">grid.arrange</span>(grids_out[[<span class="dv">1</span>]], grids_out[[<span class="dv">2</span>]],
+             grids_out[[<span class="dv">3</span>]], grids_out[[<span class="dv">4</span>]], 
+             <span class="dt">ncol=</span><span class="dv">2</span>, <span class="dt">nrow=</span><span class="dv">2</span>)</code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p>If we compare the results from the empirical test to the R function, we observe:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">power.t.test</span>(<span class="dt">n=</span><span class="dv">50</span>, <span class="dt">delta=</span><span class="dv">10</span>, <span class="dt">sd=</span><span class="dv">15</span>, <span class="dt">type=</span><span class="st">&quot;two.sample&quot;</span>, 
+             <span class="dt">sig.level =</span> <span class="fl">0.05</span>, <span class="dt">alternative=</span><span class="st">&quot;one.sided&quot;</span>)</code></pre></div>
+<pre><code>## 
+##      Two-sample t test power calculation 
+## 
+##               n = 50
+##           delta = 10
+##              sd = 15
+##       sig.level = 0.05
+##           power = 0.952077
+##     alternative = one.sided
+## 
+## NOTE: n is number in *each* group</code></pre>
+<p>and</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">700</span>)
+emp &lt;-<span class="st"> </span><span class="kw">emp_power</span>(<span class="dt">n=</span><span class="dv">50</span>, <span class="dt">mu=</span><span class="dv">160</span>, <span class="dt">sd=</span><span class="dv">15</span>, <span class="dt">alpha=</span><span class="fl">0.05</span>, <span class="dt">type=</span><span class="st">&quot;two_sample&quot;</span>,
+                 <span class="dt">alternative=</span><span class="st">&quot;greater&quot;</span>, <span class="dt">R=</span><span class="dv">1000</span>, <span class="dt">mu0=</span><span class="dv">150</span>)
+emp<span class="op">$</span>power</code></pre></div>
+<pre><code>## [1] 0.954</code></pre>
+<p>The empirical power calculation is less conservative than the theoretical implementation. Both display a high degree of power given the parameters.</p>
+</div>
+<div id="part-ii" class="section level2">
+<h2>PART II</h2>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Rizzo, Maria L. “Statistical Computing with R”. Chapman and Hall/CRC, 2007<a href="#fnref1">↩</a></p></li>
+</ol>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

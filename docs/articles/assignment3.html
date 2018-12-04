@@ -82,7 +82,7 @@
       <h1>Assignment 3</h1>
                         <h4 class="author">Jasper Ginn</h4>
             
-            <h4 class="date">2018-12-02</h4>
+            <h4 class="date">2018-12-04</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/JasperHG90/meerkat.git/blob/master/vignettes/assignment3.Rmd"><code>vignettes/assignment3.Rmd</code></a></small>
       <div class="hidden name"><code>assignment3.Rmd</code></div>
@@ -99,6 +99,7 @@
 <div id="part-i" class="section level2">
 <h2 class="hasAnchor">
 <a href="#part-i" class="anchor"></a>PART I</h2>
+<p>View the code belonging to this assignment <a href="https://github.com/JasperHG90/meerkat/blob/master/R/a3_power.R">here</a></p>
 <p><em>1. Assuming that the data are approximately normal, simulate one sample of data and perform a t-test using the R in-built t-test function. What is the p-value of the test? What is your conclusion?.</em></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">rm</span>(<span class="dt">list=</span><span class="kw">ls</span>())
 <span class="kw">library</span>(meerkat)
@@ -106,26 +107,29 @@
 <span class="co"># Set values and draw a sample</span>
 n &lt;-<span class="st"> </span><span class="dv">50</span>
 mu &lt;-<span class="st"> </span><span class="dv">160</span>
+mu0 &lt;-<span class="st"> </span><span class="dv">150</span>
 sd &lt;-<span class="st"> </span><span class="dv">15</span>
 <span class="kw">set.seed</span>(<span class="dv">600</span>)
-exp &lt;-<span class="st"> </span><span class="kw">rnorm</span>(n, mu, sd)
+x &lt;-<span class="st"> </span><span class="kw">rnorm</span>(n, mu, sd)
+<span class="kw">set.seed</span>(<span class="dv">500</span>)
+y &lt;-<span class="st"> </span><span class="kw">rnorm</span>(n, mu0, sd)
 <span class="co"># We perform a t-test on the data</span>
-<span class="kw">t.test</span>(exp, <span class="dt">alternative=</span><span class="st">"greater"</span>, <span class="dt">mu =</span> <span class="dv">150</span>)</code></pre></div>
+<span class="kw">t.test</span>(x, y, <span class="dt">alternative=</span><span class="st">"greater"</span>, <span class="dt">var.equal =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <pre><code>## 
-##  One Sample t-test
+##  Two Sample t-test
 ## 
-## data:  exp
-## t = 5.0672, df = 49, p-value = 3.07e-06
-## alternative hypothesis: true mean is greater than 150
+## data:  x and y
+## t = 3.7003, df = 98, p-value = 0.0001778
+## alternative hypothesis: true difference in means is greater than 0
 ## 95 percent confidence interval:
-##  157.1167      Inf
+##  6.154347      Inf
 ## sample estimates:
-## mean of x 
-##  160.6356</code></pre>
+## mean of x mean of y 
+##  160.6356  149.4711</code></pre>
 <p>The one-tailed test is statistically significant (p&lt;0.0001). At a significance level of a=0.05 we would therefore reject the null that there is no difference in the test scores of these groups. The experimental group , it would seem, performed better than the control and the special training has had the desired effect.</p>
 <p><strong>2. Assume that the data are normally distributed, write a function that generates data and performs a t-test 1000 times and that stores the values of the t-statistic (or the p-value) in a vector. Thinking about the definition of power in terms of rejecting the null hypothesis, how would you obtain an estimate of the power in this situation? Compare your results with those given by power.t.test</strong></p>
 <p><em>Power</em> is defined as the probability <span class="math inline">\(\pi(\theta)\)</span> of rejecting the null hypothesis given that the alternative hypothesis is true.<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>. The probability of making a Type II error (wrongfully concluding that there is no effect while an effect exists) is <span class="math inline">\(1-\pi(\theta))\)</span>. A common maximum value for the Type II error is that we should not commit it in more than 20% of cases. Hence, the ‘minimum’ power we should strive for is <span class="math inline">\(0.8\)</span>, meaning that we can detect effects <span class="math inline">\(4\)</span> out of <span class="math inline">\(5\)</span> times.</p>
-<p>The function <code><a href="../reference/emp_power.html">emp_power()</a></code> calculates, for a given <span class="math inline">\(R\)</span> number of repititions, the t-statistic between the mean value of the control group and that of a random sample drawn from the normal distribution. Given that we are interested in the probability <span class="math inline">\(\pi(\theta)\)</span>, one reasonable approach is to take the proportion of cases where the null hypothesis is rejected and the p-value of the t-test is lower than the significance level <span class="math inline">\(\alpha\)</span>.</p>
+<p>The function <code><a href="../reference/emp_power.html">emp_power()</a></code> calculates, for a given <span class="math inline">\(R\)</span> number of repititions, the t-statistic between the mean value of the control group and that of a random sample drawn from the normal distribution. Given that we are interested in the probability <span class="math inline">\(\pi(\theta)\)</span>, a reasonable approach is to take the proportion of cases where the null hypothesis is rejected. In this case, if the true difference of means is <span class="math inline">\(0\)</span>, we would still expect to achieve a power of 5% because of the Type I error rate.</p>
 <p>Given that we draw data from a normal distribution and for values where <span class="math inline">\(\theta_0 &lt; \theta_1\)</span>, we may be confident that the power of our test increases as we:</p>
 <ol style="list-style-type: decimal">
 <li>increase the sample size</li>
@@ -145,7 +149,7 @@ grids &lt;-<span class="st"> </span><span class="kw">list</span>(
 )
 
 grids_out &lt;-<span class="st"> </span><span class="kw">vector</span>(<span class="st">"list"</span>, <span class="dt">length =</span> <span class="dv">4</span>)
-<span class="co"># For each value, calculate the power od the t-test while holding the other parameters constant</span>
+<span class="co"># For each value, calculate the power of the t-test while holding the other parameters constant</span>
 <span class="cf">for</span>( i <span class="cf">in</span> <span class="kw">seq_along</span>(grids) ) {
   
   <span class="co"># Get name</span>
@@ -154,14 +158,14 @@ grids_out &lt;-<span class="st"> </span><span class="kw">vector</span>(<span cla
   
   <span class="co"># This switch is a wrapper for a bunch of if/else statements</span>
   power_values &lt;-<span class="st"> </span><span class="cf">switch</span>(grids_in_name,
-         <span class="dt">grid_mu =</span> <span class="kw">lapply</span>(grid, <span class="cf">function</span>(x) <span class="kw"><a href="../reference/emp_power.html">emp_power</a></span>(<span class="dv">150</span>, <span class="dv">50</span>, x, <span class="dv">15</span>, 
-                                                      <span class="dt">alpha=</span><span class="fl">0.05</span>, <span class="dt">alternative=</span><span class="st">"greater"</span>)),
-         <span class="dt">grid_n =</span> <span class="kw">lapply</span>(grid, <span class="cf">function</span>(x) <span class="kw"><a href="../reference/emp_power.html">emp_power</a></span>(<span class="dv">150</span>, x, <span class="dv">155</span>, <span class="dv">15</span>, 
-                                                     <span class="dt">alpha=</span><span class="fl">0.05</span>, <span class="dt">alternative=</span><span class="st">"greater"</span>)),
-         <span class="dt">grid_sd =</span> <span class="kw">lapply</span>(grid, <span class="cf">function</span>(x) <span class="kw"><a href="../reference/emp_power.html">emp_power</a></span>(<span class="dv">150</span>, <span class="dv">50</span>, <span class="dv">155</span>, x, 
-                                                      <span class="dt">alpha=</span><span class="fl">0.05</span>, <span class="dt">alternative=</span><span class="st">"greater"</span>)),
-         <span class="dt">grid_alpha =</span> <span class="kw">lapply</span>(grid, <span class="cf">function</span>(x) <span class="kw"><a href="../reference/emp_power.html">emp_power</a></span>(<span class="dv">150</span>, <span class="dv">50</span>, <span class="dv">155</span>, <span class="dv">15</span>, 
-                                                         <span class="dt">alpha=</span>x, <span class="dt">alternative=</span><span class="st">"greater"</span>))
+         <span class="dt">grid_mu =</span> <span class="kw">lapply</span>(grid, <span class="cf">function</span>(x) <span class="kw"><a href="../reference/emp_power.html">emp_power</a></span>(<span class="dv">50</span>, x, <span class="dv">15</span>, <span class="dt">R=</span><span class="dv">1000</span>, <span class="dt">type=</span><span class="st">"two_sample"</span>,
+                                                      <span class="dt">alpha=</span><span class="fl">0.05</span>, <span class="dt">alternative=</span><span class="st">"greater"</span>, <span class="dt">mu0=</span><span class="dv">150</span>)),
+         <span class="dt">grid_n =</span> <span class="kw">lapply</span>(grid, <span class="cf">function</span>(x) <span class="kw"><a href="../reference/emp_power.html">emp_power</a></span>(x, <span class="dv">155</span>, <span class="dv">15</span>, <span class="dt">R=</span><span class="dv">1000</span>, <span class="dt">type=</span><span class="st">"two_sample"</span>, 
+                                                     <span class="dt">alpha=</span><span class="fl">0.05</span>, <span class="dt">alternative=</span><span class="st">"greater"</span>, <span class="dt">mu0=</span><span class="dv">150</span>)),
+         <span class="dt">grid_sd =</span> <span class="kw">lapply</span>(grid, <span class="cf">function</span>(x) <span class="kw"><a href="../reference/emp_power.html">emp_power</a></span>(<span class="dv">50</span>, <span class="dv">155</span>, x, <span class="dt">R=</span><span class="dv">1000</span>, <span class="dt">type=</span><span class="st">"two_sample"</span>,
+                                                      <span class="dt">alpha=</span><span class="fl">0.05</span>, <span class="dt">alternative=</span><span class="st">"greater"</span>, <span class="dt">mu0=</span><span class="dv">150</span>)),
+         <span class="dt">grid_alpha =</span> <span class="kw">lapply</span>(grid, <span class="cf">function</span>(x) <span class="kw"><a href="../reference/emp_power.html">emp_power</a></span>(<span class="dv">50</span>, <span class="dv">155</span>, <span class="dv">15</span>, <span class="dt">R=</span><span class="dv">1000</span>, <span class="dt">type=</span><span class="st">"two_sample"</span>,
+                                                         <span class="dt">alpha=</span>x, <span class="dt">alternative=</span><span class="st">"greater"</span>, <span class="dt">mu0=</span><span class="dv">150</span>))
   )
   
   <span class="co"># Get values</span>
@@ -169,12 +173,14 @@ grids_out &lt;-<span class="st"> </span><span class="kw">vector</span>(<span cla
   
   <span class="co"># In data frame</span>
   df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="st">"grid"</span> =<span class="st"> </span>grid,
-                   <span class="st">"power"</span> =<span class="st"> </span>pv)
+                   <span class="st">"power"</span> =<span class="st"> </span>pv,
+                   <span class="st">"se"</span> =<span class="st"> </span><span class="kw">sapply</span>(power_values, <span class="cf">function</span>(x) x<span class="op">$</span>se))
   
   <span class="co"># Plot</span>
   grids_out[[i]] &lt;-<span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(df, <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x=</span>grid, <span class="dt">y=</span>power)) <span class="op">+</span>
 <span class="st">    </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span>() <span class="op">+</span>
 <span class="st">    </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span>() <span class="op">+</span>
+<span class="st">    </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_linerange.html">geom_errorbar</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">ymin=</span>power <span class="op">-</span><span class="st"> </span>se, <span class="dt">ymax=</span>power <span class="op">+</span><span class="st"> </span>se)) <span class="op">+</span><span class="st"> </span>
 <span class="st">    </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span>() <span class="op">+</span>
 <span class="st">    </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_x_continuous</a></span>(<span class="dt">name =</span> <span class="kw">strsplit</span>(grids_in_name, <span class="st">"_"</span>)[[<span class="dv">1</span>]][<span class="dv">2</span>]) <span class="op">+</span>
 <span class="st">    </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_y_continuous</a></span>(<span class="dt">name =</span> <span class="st">"Power"</span>)
@@ -183,10 +189,12 @@ grids_out &lt;-<span class="st"> </span><span class="kw">vector</span>(<span cla
 
 <span class="co"># Plot</span>
 <span class="kw"><a href="http://www.rdocumentation.org/packages/gridExtra/topics/arrangeGrob">grid.arrange</a></span>(grids_out[[<span class="dv">1</span>]], grids_out[[<span class="dv">2</span>]],
-             grids_out[[<span class="dv">3</span>]], grids_out[[<span class="dv">4</span>]], <span class="dt">ncol=</span><span class="dv">2</span>, <span class="dt">nrow=</span><span class="dv">2</span>)</code></pre></div>
+             grids_out[[<span class="dv">3</span>]], grids_out[[<span class="dv">4</span>]], 
+             <span class="dt">ncol=</span><span class="dv">2</span>, <span class="dt">nrow=</span><span class="dv">2</span>)</code></pre></div>
 <p><img src="assignment3_files/figure-html/unnamed-chunk-2-1.png" width="700"></p>
 <p>If we compare the results from the empirical test to the R function, we observe:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">power.t.test</span>(<span class="dt">n=</span><span class="dv">50</span>, <span class="dt">delta=</span><span class="dv">10</span>, <span class="dt">sd=</span><span class="dv">15</span>, <span class="dt">sig.level =</span> <span class="fl">0.05</span>, <span class="dt">alternative=</span><span class="st">"one.sided"</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">power.t.test</span>(<span class="dt">n=</span><span class="dv">50</span>, <span class="dt">delta=</span><span class="dv">10</span>, <span class="dt">sd=</span><span class="dv">15</span>, <span class="dt">type=</span><span class="st">"two.sample"</span>, 
+             <span class="dt">sig.level =</span> <span class="fl">0.05</span>, <span class="dt">alternative=</span><span class="st">"one.sided"</span>)</code></pre></div>
 <pre><code>## 
 ##      Two-sample t test power calculation 
 ## 
@@ -199,10 +207,16 @@ grids_out &lt;-<span class="st"> </span><span class="kw">vector</span>(<span cla
 ## 
 ## NOTE: n is number in *each* group</code></pre>
 <p>and</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">emp &lt;-<span class="st"> </span><span class="kw"><a href="../reference/emp_power.html">emp_power</a></span>(<span class="dt">ref_mu=</span><span class="dv">150</span>, <span class="dt">n=</span><span class="dv">50</span>, <span class="dt">mu=</span><span class="dv">160</span>, <span class="dt">sd=</span><span class="dv">15</span>, <span class="dt">alternative=</span><span class="st">"greater"</span>, <span class="dt">R=</span><span class="dv">1000</span>)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">700</span>)
+emp &lt;-<span class="st"> </span><span class="kw"><a href="../reference/emp_power.html">emp_power</a></span>(<span class="dt">n=</span><span class="dv">50</span>, <span class="dt">mu=</span><span class="dv">160</span>, <span class="dt">sd=</span><span class="dv">15</span>, <span class="dt">alpha=</span><span class="fl">0.05</span>, <span class="dt">type=</span><span class="st">"two_sample"</span>,
+                 <span class="dt">alternative=</span><span class="st">"greater"</span>, <span class="dt">R=</span><span class="dv">1000</span>, <span class="dt">mu0=</span><span class="dv">150</span>)
 emp<span class="op">$</span>power</code></pre></div>
-<pre><code>## [1] 1</code></pre>
+<pre><code>## [1] 0.954</code></pre>
 <p>The empirical power calculation is less conservative than the theoretical implementation. Both display a high degree of power given the parameters.</p>
+</div>
+<div id="part-ii" class="section level2">
+<h2 class="hasAnchor">
+<a href="#part-ii" class="anchor"></a>PART II</h2>
 </div>
 <div class="footnotes">
 <hr>
@@ -219,6 +233,7 @@ emp<span class="op">$</span>power</code></pre></div>
       <ul class="nav nav-pills nav-stacked">
 <li><a href="#introduction">Introduction</a></li>
       <li><a href="#part-i">PART I</a></li>
+      <li><a href="#part-ii">PART II</a></li>
       </ul>
 </div>
       </div>

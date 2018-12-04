@@ -13,7 +13,7 @@ Assignment 2 can be viewed [here](https://jasperhg90.github.io/meerkat/articles/
 
 If you install the package, you can also view the assignment by calling:
 
-```{r}
+```r
 vignette("assignment2", library="meerkat")
 ```
 
