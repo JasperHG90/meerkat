@@ -154,6 +154,7 @@ TFI <- c(1,1,2,3,3,4,5,7,7,8)
 
 ```{r}
 # Run
+set.seed(1400)
 pt <- permutation_test(CSFI, TFI, 999)
 pt
 ```
@@ -230,3 +231,24 @@ set.seed(888)
 pt <- permutation_test(CSFI, TFI, 999, use_sample = TRUE)
 pt
 ```
+
+We may observe different results using these different sampling procedures. This is because the group sizes may vary quite a bit.
+
+```{r}
+set.seed(1000)
+permutation_test(CSFI, TFI, 999, use_sample = FALSE)
+```
+
+```{r}
+set.seed(1000)
+permutation_test(CSFI, TFI, 999, use_sample = TRUE)
+```
+
+This is a problem in the above situation because the results lead to different conclusions about statistical significance at $\alpha=0.1$. To alleviate this problem, we can change the `tolerance` parameter. This effectively reduces the standard error around the proportion when using `runif`. This increased stability comes at the expense of computational efficiency because we will have to sample more often to get the exact proportion.
+
+```{r}
+set.seed(1000)
+permutation_test(CSFI, TFI, 999, use_sample = FALSE, tolerance = 0.1)
+```
+
+Bottom line: `sample()` is the better option of the two.

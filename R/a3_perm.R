@@ -4,19 +4,35 @@
 #'
 #' This function computes the t-test on the inputs R times and samples the pooled data (i.e. x and y together) without replacement. The function calculates the p-value by
 #'
+#' @param x a numeric vector
+#' @param y a numeric vector
+#' @param R number of resamples. Must be between 99 and 999.
 #' @param use_sample logical. Use the sample() function? If FALSE, this function will use the runif() function to draw random samples.
+#' @param ... optional (named) parameters
+#' \itemize{
+#'    \item{alternative: }{a character string specifying the alternative hypothesis, must be one of "two.sided" (default), "greater" or "less". You can specify just the initial letter. See ?t.test() for more information}
+#'    \item{var.equal: }{a logical variable indicating whether to treat the two variances as being equal. If TRUE then the pooled variance is used to estimate the variance otherwise the Welch (or Satterthwaite) approximation to the degrees of freedom is used. See ?t.test() for more information.}
+#'    \item{tolerance: }{defines the error tolerance bounds around the proportion of indices. Smaller tolerance means smaller bounds and more resampling to get the 'right' proportion}
+#' }
 #'
+#' @return List containing
+#' \itemize{
+#'     \item{data: }{list containing input parameters}
+#'     \item{results: }{result of the permutation test. Contains indices for each run, p-values, options passed to the t-tests}
+#' }
 #' @seealso Rizzo, Maria L. "Statistical Computing with R". Chapman and Hall/CRC, 2007. pp. 183-188
+#' @export
 permutation_test <- function(x, y, R, use_sample = TRUE, ...) {
 
   # Get options
   opts <- list(...)
   alternative <- ifelse("alternative" %in% names(opts), opts$alternative, "two.sided")
   # This must be valid
-  if(!alternative %in% c("two.sided", "greater", "les")) {
+  if(!alternative %in% c("two.sided", "greater", "less")) {
     stop("'alternative' must be one of 'two.sided', 'greater' or 'less'. See ?t.test() for more information")
   }
   variance_equal <- ifelse("var.equal" %in% names(opts), opts$var.equal, FALSE)
+  tolerance <- ifelse("tolerance" %in% names(opts), opts$tolerance, 1)
 
   # Preparation ----
 
@@ -57,7 +73,8 @@ permutation_test <- function(x, y, R, use_sample = TRUE, ...) {
 
   # Permutation test ----
 
-  res <- permute(data, use_sample, variance_equal = variance_equal, alternative = alternative)
+  res <- permute(data, use_sample, variance_equal = variance_equal,
+                 alternative = alternative, tolerance = tolerance)
 
   # TODO: Make one and two-tailed test
 
@@ -78,7 +95,17 @@ permutation_test <- function(x, y, R, use_sample = TRUE, ...) {
 }
 
 # Permutation test
-permute <- function(inputs, use_sample, variance_equal, alternative) {
+#
+# See explanation under 'permutation_test'
+#
+# @param inputs list of inputs passed by the user
+# @param use_sample see permutation_test()
+# @param variance_equal see permutation_test()
+# @param alternative see permutation_test()
+# @param tolerance see permutation_test()
+#
+# @return results of the permutation test
+permute <- function(inputs, use_sample, variance_equal, alternative, tolerance) {
 
   # Unroll data
   R <- inputs$R
@@ -105,7 +132,6 @@ permute <- function(inputs, use_sample, variance_equal, alternative) {
     ind <- vector("list", length = R)
   }
 
-
   # Permute
   for(i in 1:R) {
 
@@ -123,7 +149,7 @@ permute <- function(inputs, use_sample, variance_equal, alternative) {
       p <- (max(n_x, n_y) / length(K_ind))
       # Standard error for this proportion
       se <- sqrt((p * (1-p))/length(K_ind))
-      k <- draw(p, se, K_ind)
+      k <- draw(p, se, tolerance, K_ind)
       ind[[i]] <- k
     }
 
@@ -160,19 +186,28 @@ permute <- function(inputs, use_sample, variance_equal, alternative) {
 
 }
 
-draw <- function(p, se, K_ind) {
+# Draw k indices from a total of K with proportion p
+#
+# @param p proportion of indices to sample from K_ind
+# @param se standard error of p
+# @param tolerance defines the error tolerance bounds around the proportion of indices. Smaller tolerance means smaller bounds and more resampling to get the 'right' proportion
+# @parm K_ind indices from which to sample
+#
+# @return indices sampled from K_ind. If not within the bounds of abs(p+se) then the function calls itself
+draw <- function(p, se, tolerance, K_ind) {
   # Get indices
   k <- K_ind[runif(length(K_ind), min = 0, max = 1) <= p]
   # If out of bounds, call self
   prop_ind <- (length(k) / length(K_ind))
-  if(prop_ind < (p - se) | prop_ind > (p + se)) {
-    draw(p,se, K_ind)
+  if(prop_ind < (p - tolerance * se) | prop_ind > (p + tolerance * se)) {
+    draw(p,se, tolerance, K_ind)
   } else {
     return(k)
   }
 }
 
-# Plot method
+#' Plot method
+#' @export
 plot.permutation_test <- function(object) {
 
   # Plot a histogram of distribution
@@ -185,7 +220,8 @@ plot.permutation_test <- function(object) {
 
 }
 
-# Print method
+#' Print method
+#' @export
 print.permutation_test <- function(object) {
 
   p <- object$results$pvalue
