@@ -21,20 +21,17 @@
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
-<!-- sticky kit -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
-
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
+<script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
 
 
 
 <meta property="og:title" content="Empirical power of a t-test — emp_power" />
 
-<meta property="og:description" content="This function takes a reference mean value, sample size, mean, standard deviation, significance level and computes the empirical power of R randomly drawn normally distributed samples with mean mu, standard deviation sd and sample size n. It then calculates R t.tests with reference to the" />
+<meta property="og:description" content="This function takes a reference mean value, sample size, mean, standard deviation, significance level and computes the empirical power of R randomly drawn normally distributed samples with mean mu, standard deviation sd and sample size n. The function can compute the power of one-sample t-tests and two-sample t-tests (variance is always assumed to be equal). This function will always return the data it generates internally because its focus is not on efficiency but rather reproducibility" />
 <meta name="twitter:card" content="summary" />
-
 
 
 <!-- mathjax -->
@@ -119,11 +116,11 @@
 
     <div class="ref-description">
     
-    <p>This function takes a reference mean value, sample size, mean, standard deviation, significance level and computes the empirical power of R randomly drawn normally distributed samples with mean mu, standard deviation sd and sample size n. It then calculates R t.tests with reference to the</p>
+    <p>This function takes a reference mean value, sample size, mean, standard deviation, significance level and computes the empirical power of R randomly drawn normally distributed samples with mean mu, standard deviation sd and sample size n. The function can compute the power of one-sample t-tests and two-sample t-tests (variance is always assumed to be equal). This function will always return the data it generates internally because its focus is not on efficiency but rather reproducibility</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>emp_power</span>(<span class='no'>n</span>, <span class='no'>mu</span>, <span class='no'>sd</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0.05</span>, <span class='kw'>R</span> <span class='kw'>=</span> <span class='fl'>1000</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"one_sample"</span>,
+    <pre class="usage"><span class='fu'>emp_power</span>(<span class='no'>n</span>, <span class='no'>mu</span>, <span class='no'>mu0</span>, <span class='no'>sd</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0.05</span>, <span class='kw'>R</span> <span class='kw'>=</span> <span class='fl'>1000</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"one_sample"</span>,
   <span class='st'>"two_sample"</span>), <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -136,6 +133,10 @@
     <tr>
       <th>mu</th>
       <td><p>mean value used to draw random normal samples. See ?rnorm() for more information</p></td>
+    </tr>
+    <tr>
+      <th>mu0</th>
+      <td><p>numeric. mean of control group if running a two-sample t-test or, if type = "one_sample", a value indicating the true value of the mean (or difference in means if you are performing a one sample test). See ?t.test() for more information</p></td>
     </tr>
     <tr>
       <th>sd</th>
@@ -156,9 +157,9 @@
     <tr>
       <th>...</th>
       <td><p>optional arguments. You may pass selected parameters from the t.test() function. You may also pass the following parameters:</p><ul>
-<li><p>mu0: numeric. mean of control group if running a two-sample t-test or, if type = "one_sample", a value indicating the true value of the mean (or difference in means if you are performing a one sample test). See ?t.test() for more information,</p></li>
 <li><p>n0: numeric. sample size of control group if running a two-sample t-test. If not supplied then the function will use the value of n defined above.</p></li>
 <li><p>sd0: numeric. standard deviation of control group if running a two-sample t-test. If not supplied then the function will use the value of sd defined above.</p></li>
+<li><p>alternative: a character string specifying the alternative hypothesis, must be one of "two.sided" (default), "greater" or "less". You can specify just the initial letter. See ?t.test() for more information</p></li>
 </ul><p>Note that you are required to either pass all parameters related to the control group (n0, mu0, sd0) or a parameter related to the reference mean (ref_mu).</p></td>
     </tr>
     </table>
@@ -170,6 +171,7 @@
 <li><p>data: matrix. values of R samples of size n with mean mu and standard deviation sd drawn from a normal distribution using rnorm()</p></li>
 <li><p>p_values: vector. resulting p-values of R tests comparing the samples against the reference mean ref_mu</p></li>
 <li><p>power: vector. power calculated by taking the proportion of p-values for which the value falls below or is equal to the significance level alpha</p></li>
+<li><p>se :standard error of the power estimate. Calculated using the SE formula of a proportion. For more information, see the reference to Rizzo below.</p></li>
 </ul>
 
     

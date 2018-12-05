@@ -152,7 +152,7 @@ CSFI <- c(2,5,5,6,6,7,8,9)
 TFI <- c(1,1,2,3,3,4,5,7,7,8)
 ```
 
-If we assume that the variances are equal, we can apply a two-sample t-test using the permutation methods.[^Rizzo, p.218]
+If we assume that the variances are equal, we can apply a two-sample t-test using the permutation method.^[Rizzo, p.218]
 
 ```{r}
 # Run
@@ -218,7 +218,7 @@ sd100<- sqrt(var(obs_drawn)) # +- 3.96
 err100 <- sqrt(var(obs_drawn)) / 80 # 5%
 ```
 
-On average, this gives us the right number of observations. By the law of large numbers, we expect the 'error' (measured above as the standard deviation divided by the expected sample size) to go down as the sample size $n \to \infty$.  
+On average, this gives us the right number of observations. We expect the 'error' (measured above as the standard deviation divided by the expected sample size) to go down as the sample size $n \to \infty$.  
 
 In the `permutation_test()` function, we can specify whether we want to sample this way using the `use_sample()` flag. As shown above, there is always a chance that we will draw a sample that is few in number of observations. To make sure that this does not happen, we impose the rule that the proportion of observations may not be above or below one standard error away from the proportion. If this happens, then the function calls itself recursively until the proportion is within acceptable bounds.
 
@@ -253,10 +253,32 @@ set.seed(1000)
 permutation_test(CSFI, TFI, 999, use_sample = FALSE, tolerance = 0.1)
 ```
 
-The p-value of this function comes close to that of the `sample()` function, but does not equal it (even if the tolerance is set at $0$). Bottom line: `sample()` is the better option of the two.
+The p-value of this function comes close to that of the `sample()` function, but does not equal it (even if the tolerance is set at $0$).
+
+Another approach to sampling without using the `sample()` function is to draw values from the binomial distribution.
 
 2. **Which resampling technique(s) would you use, if you would be interested in estimation instead of hypothesis testing? Make an R function that performs resampling for estimation purposes using the mean difference between two groups from the t-test function. Your function should produce all relevant aspects of estimation, and you should discuss these aspects and put them in perspective. Again use the Flight instruction data to show the results of your function.**
 
-I would use bootstrapping to do this. Using bootstrapping, we can draw $R$ samples with replacement from the original sample to construct an empirical sampling distribution. We 
+View the code belonging to this assignment [here](https://github.com/JasperHG90/meerkat/blob/master/R/a3_bootstrap.R)
 
-In this case, the quantity $\theta$ of interest is the t-statistic we are estimating $\mu_1 - \mu_2 = 0$ by using the `t.test()` function. 
+I would use bootstrapping to do this. Using bootstrapping, we can draw $R$ samples with replacement from the original sample to construct an empirical sampling distribution. In this case, the quantity $\theta$ of interest is the t-statistic.
+
+```{r}
+set.seed(4500)
+res <- boot_ttest(CSFI, TFI, R=2000)
+res
+```
+
+The `boot_ttest()` function gives us a variety of statistics. The 'original' t-statistic is the value we get when we calculate the t-statistic for the input values. The **bias** indicates that, on average, we are over-estimating the t-statistic. This we can also observe from the histogram below as it is skewed to the right.
+
+```{r}
+plot(res)
+```
+
+The **standard error** is the standard deviation of the empirical sampling distribution. The **jackknife-after-bootstrap** estimate gives us an idea of the variability within the standard error statistic.
+
+Finally, the 95\% confidence intervals give us the percentile CI for this sample (also shown in the plot above). The confidence intervals are close to those of the theoretical confidence intervals.
+
+```{r}
+t.test(CSFI, TFI, var.equal = TRUE)
+```

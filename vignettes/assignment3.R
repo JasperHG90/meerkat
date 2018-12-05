@@ -165,3 +165,14 @@ permutation_test(CSFI, TFI, 999, use_sample = TRUE)
 set.seed(1000)
 permutation_test(CSFI, TFI, 999, use_sample = FALSE, tolerance = 0.1)
 
+## ------------------------------------------------------------------------
+set.seed(4500)
+res <- boot_ttest(CSFI, TFI, R=2000)
+res
+
+## ------------------------------------------------------------------------
+plot(res)
+
+## ------------------------------------------------------------------------
+t.test(CSFI, TFI, var.equal = TRUE)
+

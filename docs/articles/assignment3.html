@@ -8,8 +8,8 @@
 <title>Assignment 3 • meerkat</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="Assignment 3">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="../jquery.sticky-kit.min.js"></script><script src="../pkgdown.js"></script><meta property="og:title" content="Assignment 3">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
@@ -82,7 +82,7 @@
       <h1>Assignment 3</h1>
                         <h4 class="author">Jasper Ginn</h4>
             
-            <h4 class="date">2018-12-04</h4>
+            <h4 class="date">2018-12-05</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/JasperHG90/meerkat.git/blob/master/vignettes/assignment3.Rmd"><code>vignettes/assignment3.Rmd</code></a></small>
       <div class="hidden name"><code>assignment3.Rmd</code></div>
@@ -126,11 +126,11 @@ y &lt;-<span class="st"> </span><span class="kw">rnorm</span>(n, mu0, sd)
 ## sample estimates:
 ## mean of x mean of y 
 ##  160.6356  149.4711</code></pre>
-<p>The one-tailed test is statistically significant (p&lt;0.0001). At a significance level of a=0.05 we would therefore reject the null that there is no difference in the test scores of these groups. The experimental group , it would seem, performed better than the control and the special training has had the desired effect.</p>
+<p>The one-tailed test is statistically significant (p&lt;0.001). At a significance level of a=0.05 we would therefore reject the null that there is no difference in the test scores of these groups. The experimental group , it would seem, performed better than the control and the special training has had the desired effect.</p>
 <p><strong>2. Assume that the data are normally distributed, write a function that generates data and performs a t-test 1000 times and that stores the values of the t-statistic (or the p-value) in a vector. Thinking about the definition of power in terms of rejecting the null hypothesis, how would you obtain an estimate of the power in this situation? Compare your results with those given by power.t.test</strong></p>
 <p><em>Power</em> is defined as the probability <span class="math inline">\(\pi(\theta)\)</span> of rejecting the null hypothesis given that the alternative hypothesis is true.<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>. The probability of making a Type II error (wrongfully concluding that there is no effect while an effect exists) is <span class="math inline">\(1-\pi(\theta))\)</span>. A common maximum value for the Type II error is that we should not commit it in more than 20% of cases. Hence, the ‘minimum’ power we should strive for is <span class="math inline">\(0.8\)</span>, meaning that we can detect effects <span class="math inline">\(4\)</span> out of <span class="math inline">\(5\)</span> times.</p>
-<p>The function <code><a href="../reference/emp_power.html">emp_power()</a></code> calculates, for a given <span class="math inline">\(R\)</span> number of repititions, the t-statistic between the mean value of the control group and that of a random sample drawn from the normal distribution. Given that we are interested in the probability <span class="math inline">\(\pi(\theta)\)</span>, a reasonable approach is to take the proportion of cases where the null hypothesis is rejected. In this case, if the true difference of means is <span class="math inline">\(0\)</span>, we would still expect to achieve a power of 5% because of the Type I error rate.</p>
-<p>Given that we draw data from a normal distribution and for values where <span class="math inline">\(\theta_0 &lt; \theta_1\)</span>, we may be confident that the power of our test increases as we:</p>
+<p>The function <code><a href="../reference/emp_power.html">emp_power()</a></code> calculates, for a given <span class="math inline">\(R\)</span> number of repititions, the t-statistic between the mean value of the control group and that of a random sample drawn from the normal distribution. Given that we are interested in the probability <span class="math inline">\(\pi(\theta)\)</span>, a reasonable approach is to take the proportion of cases where the null hypothesis is rejected. In this case, if the true difference of means is <span class="math inline">\(0\)</span>, we would still expect to achieve a power of 5% because of the Type I error rate. As we increase the difference in mean values, we expect the power (or the percentage of significant t-tests) to increase.</p>
+<p>Furthermore, given that we draw data from a normal distribution and for values where <span class="math inline">\(\theta_0 &lt; \theta_1\)</span>, we may be confident that the power of our test increases as we:</p>
 <ol style="list-style-type: decimal">
 <li>increase the sample size</li>
 <li>increase the significance level <span class="math inline">\(\alpha\)</span> (e.g. from <span class="math inline">\(0.05\)</span> to <span class="math inline">\(0.1\)</span>)</li>
@@ -158,14 +158,23 @@ grids_out &lt;-<span class="st"> </span><span class="kw">vector</span>(<span cla
   
   <span class="co"># This switch is a wrapper for a bunch of if/else statements</span>
   power_values &lt;-<span class="st"> </span><span class="cf">switch</span>(grids_in_name,
-         <span class="dt">grid_mu =</span> <span class="kw">lapply</span>(grid, <span class="cf">function</span>(x) <span class="kw"><a href="../reference/emp_power.html">emp_power</a></span>(<span class="dv">50</span>, x, <span class="dv">15</span>, <span class="dt">R=</span><span class="dv">1000</span>, <span class="dt">type=</span><span class="st">"two_sample"</span>,
-                                                      <span class="dt">alpha=</span><span class="fl">0.05</span>, <span class="dt">alternative=</span><span class="st">"greater"</span>, <span class="dt">mu0=</span><span class="dv">150</span>)),
-         <span class="dt">grid_n =</span> <span class="kw">lapply</span>(grid, <span class="cf">function</span>(x) <span class="kw"><a href="../reference/emp_power.html">emp_power</a></span>(x, <span class="dv">155</span>, <span class="dv">15</span>, <span class="dt">R=</span><span class="dv">1000</span>, <span class="dt">type=</span><span class="st">"two_sample"</span>, 
-                                                     <span class="dt">alpha=</span><span class="fl">0.05</span>, <span class="dt">alternative=</span><span class="st">"greater"</span>, <span class="dt">mu0=</span><span class="dv">150</span>)),
-         <span class="dt">grid_sd =</span> <span class="kw">lapply</span>(grid, <span class="cf">function</span>(x) <span class="kw"><a href="../reference/emp_power.html">emp_power</a></span>(<span class="dv">50</span>, <span class="dv">155</span>, x, <span class="dt">R=</span><span class="dv">1000</span>, <span class="dt">type=</span><span class="st">"two_sample"</span>,
-                                                      <span class="dt">alpha=</span><span class="fl">0.05</span>, <span class="dt">alternative=</span><span class="st">"greater"</span>, <span class="dt">mu0=</span><span class="dv">150</span>)),
-         <span class="dt">grid_alpha =</span> <span class="kw">lapply</span>(grid, <span class="cf">function</span>(x) <span class="kw"><a href="../reference/emp_power.html">emp_power</a></span>(<span class="dv">50</span>, <span class="dv">155</span>, <span class="dv">15</span>, <span class="dt">R=</span><span class="dv">1000</span>, <span class="dt">type=</span><span class="st">"two_sample"</span>,
-                                                         <span class="dt">alpha=</span>x, <span class="dt">alternative=</span><span class="st">"greater"</span>, <span class="dt">mu0=</span><span class="dv">150</span>))
+                          <span class="dt">grid_mu =</span> <span class="kw">lapply</span>(grid, <span class="cf">function</span>(x) <span class="kw"><a href="../reference/emp_power.html">emp_power</a></span>(<span class="dv">50</span>, 
+                                                                       x, 
+                                                                       <span class="dv">15</span>, 
+                                                                       <span class="dt">R=</span><span class="dv">1000</span>, 
+                                                                       <span class="dt">type=</span><span class="st">"two_sample"</span>,
+                                                                       <span class="dt">alpha=</span><span class="fl">0.05</span>, 
+                                                                       <span class="dt">alternative=</span><span class="st">"greater"</span>, 
+                                                                       <span class="dt">mu0=</span><span class="dv">150</span>)),
+                          <span class="dt">grid_n =</span> <span class="kw">lapply</span>(grid, <span class="cf">function</span>(x) <span class="kw"><a href="../reference/emp_power.html">emp_power</a></span>(x, <span class="dv">155</span>, <span class="dv">15</span>, <span class="dt">R=</span><span class="dv">1000</span>, 
+                                                                      <span class="dt">type=</span><span class="st">"two_sample"</span>, <span class="dt">alpha=</span><span class="fl">0.05</span>, 
+                                                                      <span class="dt">alternative=</span><span class="st">"greater"</span>, <span class="dt">mu0=</span><span class="dv">150</span>)),
+                          <span class="dt">grid_sd =</span> <span class="kw">lapply</span>(grid, <span class="cf">function</span>(x) <span class="kw"><a href="../reference/emp_power.html">emp_power</a></span>(<span class="dv">50</span>, <span class="dv">155</span>, x, <span class="dt">R=</span><span class="dv">1000</span>, 
+                                                                       <span class="dt">type=</span><span class="st">"two_sample"</span>,<span class="dt">alpha=</span><span class="fl">0.05</span>, 
+                                                                       <span class="dt">alternative=</span><span class="st">"greater"</span>, <span class="dt">mu0=</span><span class="dv">150</span>)),
+                          <span class="dt">grid_alpha =</span> <span class="kw">lapply</span>(grid, <span class="cf">function</span>(x) <span class="kw"><a href="../reference/emp_power.html">emp_power</a></span>(<span class="dv">50</span>, <span class="dv">155</span>, <span class="dv">15</span>, <span class="dt">R=</span><span class="dv">1000</span>, 
+                                                                          <span class="dt">type=</span><span class="st">"two_sample"</span>,<span class="dt">alpha=</span>x, 
+                                                                          <span class="dt">alternative=</span><span class="st">"greater"</span>, <span class="dt">mu0=</span><span class="dv">150</span>))
   )
   
   <span class="co"># Get values</span>
@@ -208,20 +217,169 @@ grids_out &lt;-<span class="st"> </span><span class="kw">vector</span>(<span cla
 ## NOTE: n is number in *each* group</code></pre>
 <p>and</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">700</span>)
-emp &lt;-<span class="st"> </span><span class="kw"><a href="../reference/emp_power.html">emp_power</a></span>(<span class="dt">n=</span><span class="dv">50</span>, <span class="dt">mu=</span><span class="dv">160</span>, <span class="dt">sd=</span><span class="dv">15</span>, <span class="dt">alpha=</span><span class="fl">0.05</span>, <span class="dt">type=</span><span class="st">"two_sample"</span>,
-                 <span class="dt">alternative=</span><span class="st">"greater"</span>, <span class="dt">R=</span><span class="dv">1000</span>, <span class="dt">mu0=</span><span class="dv">150</span>)
+emp &lt;-<span class="st"> </span><span class="kw"><a href="../reference/emp_power.html">emp_power</a></span>(<span class="dt">n=</span><span class="dv">50</span>, <span class="dt">mu=</span><span class="dv">160</span>, <span class="dt">mu0=</span><span class="dv">150</span>, <span class="dt">sd=</span><span class="dv">15</span>, 
+                 <span class="dt">alpha=</span><span class="fl">0.05</span>, <span class="dt">type=</span><span class="st">"two_sample"</span>,
+                 <span class="dt">alternative=</span><span class="st">"greater"</span>, <span class="dt">R=</span><span class="dv">1000</span>)
 emp<span class="op">$</span>power</code></pre></div>
 <pre><code>## [1] 0.954</code></pre>
-<p>The empirical power calculation is less conservative than the theoretical implementation. Both display a high degree of power given the parameters.</p>
+<p>This gives us a comparable power estimation.</p>
 </div>
 <div id="part-ii" class="section level2">
 <h2 class="hasAnchor">
 <a href="#part-ii" class="anchor"></a>PART II</h2>
+<p>View the code belonging to this assignment <a href="https://github.com/JasperHG90/meerkat/blob/master/R/a3_perm.R">here</a></p>
+<ol style="list-style-type: decimal">
+<li><strong>Choose an appropriate resampling technique and make a function that performs a hypothesis test based on the t-statistic produced by the standard t-test function. Use the in-built sample() function to perform the resampling of the data. Include relevant statistics in your function and give the function a clear structure (choose sensible input arguments, organize the output in an efficient way, add comments, etc). Show the results of your resampling technique on the Flight instruction data.</strong></li>
+</ol>
+<p>We begin by specifying the data</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Create variables for flight simulation data</span>
+CSFI &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">5</span>,<span class="dv">5</span>,<span class="dv">6</span>,<span class="dv">6</span>,<span class="dv">7</span>,<span class="dv">8</span>,<span class="dv">9</span>)
+TFI &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">7</span>,<span class="dv">7</span>,<span class="dv">8</span>)</code></pre></div>
+<p>If we assume that the variances are equal, we can apply a two-sample t-test using the permutation method.<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Run</span>
+<span class="kw">set.seed</span>(<span class="dv">1400</span>)
+pt &lt;-<span class="st"> </span><span class="kw"><a href="../reference/permutation_test.html">permutation_test</a></span>(CSFI, TFI, <span class="dv">999</span>)
+pt</code></pre></div>
+<pre><code>## Two-tailed permutation test using 18 observations and 999 permutations
+## 
+## K    R   t       p
+## -----------------------------------
+## 18   999 1.68    0.132</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(pt)</code></pre></div>
+<p><img src="assignment3_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">t.test</span>(CSFI, TFI)</code></pre></div>
+<pre><code>## 
+##  Welch Two Sample t-test
+## 
+## data:  CSFI and TFI
+## t = 1.7161, df = 15.947, p-value = 0.1055
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -0.4477771  4.2477771
+## sample estimates:
+## mean of x mean of y 
+##       6.0       4.1</code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li><strong>How would you program the drawing of random samples when you do not want to use the sample() function? Modify the function you have programmed in (1) in such a way that it does not use the sample() function anymore. Run your new function and show that you can obtain the same results as in (1).</strong></li>
+</ol>
+<p>We can use the R function <code>runif()</code> to draw values from the uniform distribution.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">100</span>)
+<span class="co"># This draws 5 values from a uniform with a=0 and b=1</span>
+<span class="kw">runif</span>(<span class="dv">5</span>)</code></pre></div>
+<pre><code>## [1] 0.30776611 0.25767250 0.55232243 0.05638315 0.46854928</code></pre>
+<p>If we wanted 80% of our rows randomly sampled, then we subset the probabilities generated by the uniform distribution such that they are below <span class="math inline">\(0.8\)</span>. This works because the uniform distribution is linear.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Sample from the density from 0 to 1</span>
+<span class="kw">library</span>(ggplot2)
+<span class="kw">library</span>(gridExtra)
+x &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="fl">0.1</span>)
+df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x=</span>x, <span class="dt">dens=</span><span class="kw">dunif</span>(x, <span class="dv">0</span>, <span class="dv">1</span>), <span class="dt">dist=</span><span class="kw">punif</span>(x,<span class="dv">0</span>,<span class="dv">1</span>), <span class="dt">rand =</span> <span class="kw">runif</span>(<span class="kw">length</span>(x), <span class="dv">0</span>, <span class="dv">1</span>))
+p1 &lt;-<span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(df, <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x=</span>x, <span class="dt">y=</span>dens)) <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span>() <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span>(<span class="st">"uniform density"</span>)
+p2 &lt;-<span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(df, <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x=</span>x, <span class="dt">y=</span>dist)) <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span>() <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span>(<span class="st">"uniform distribution"</span>)
+p3 &lt;-<span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(df, <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x=</span>x, <span class="dt">y=</span>rand)) <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span>() <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span>(<span class="st">"random uniform distribution values"</span>) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_hline</a></span>(<span class="dt">yintercept =</span> <span class="fl">0.25</span>, <span class="dt">col =</span> <span class="st">"red"</span>, <span class="dt">linetype =</span> <span class="dv">3</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_hline</a></span>(<span class="dt">yintercept =</span> <span class="fl">0.5</span>, <span class="dt">col =</span> <span class="st">"red"</span>, <span class="dt">linetype =</span> <span class="dv">3</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_hline</a></span>(<span class="dt">yintercept =</span> <span class="fl">0.75</span>, <span class="dt">col =</span> <span class="st">"red"</span>, <span class="dt">linetype =</span> <span class="dv">3</span>)
+<span class="kw"><a href="http://www.rdocumentation.org/packages/gridExtra/topics/arrangeGrob">grid.arrange</a></span>(p1, p2,p3, <span class="dt">ncol=</span><span class="dv">3</span>)</code></pre></div>
+<p><img src="assignment3_files/figure-html/unnamed-chunk-10-1.png" width="700"></p>
+<p>In the third plot above, we see that approximately 50% of the data lies below the median and 50% lies above it. Hence, if we wanted to sample 80% of our data, we would expect that proportion to be correct <em>on average</em> due to the randomness of the draws. We can demonstrate this as follows: sample 80% of the values of a sequence of numbers from 1 to 20 and take the length of this sequence</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">20</span>)
+obs_drawn &lt;-<span class="st"> </span><span class="kw">vapply</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">2000</span>, <span class="cf">function</span>(x) <span class="kw">length</span>(<span class="kw">seq</span>(<span class="dv">1</span>,<span class="dv">20</span>,<span class="dv">1</span>)[<span class="kw">runif</span>(<span class="dv">20</span>) <span class="op">&lt;</span><span class="st"> </span><span class="fl">0.8</span>]), <span class="dv">0</span>)
+<span class="kw">hist</span>(obs_drawn)</code></pre></div>
+<p><img src="assignment3_files/figure-html/unnamed-chunk-11-1.png" width="700"></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mu20 &lt;-<span class="st"> </span><span class="kw">mean</span>(obs_drawn) <span class="co"># += 16</span>
+sd20&lt;-<span class="st"> </span><span class="kw">sqrt</span>(<span class="kw">var</span>(obs_drawn)) <span class="co"># +- 1.76</span>
+err &lt;-<span class="st"> </span><span class="kw">sqrt</span>(<span class="kw">var</span>(obs_drawn)) <span class="op">/</span><span class="st"> </span><span class="dv">16</span></code></pre></div>
+<p>So on average, we draw 16 observations with an sd of 1.76 or +- 11% error. We can do the same for 100 observations:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">40</span>)
+obs_drawn &lt;-<span class="st"> </span><span class="kw">vapply</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">2000</span>, <span class="cf">function</span>(x) <span class="kw">length</span>(<span class="kw">seq</span>(<span class="dv">1</span>,<span class="dv">100</span>,<span class="dv">1</span>)[<span class="kw">runif</span>(<span class="dv">100</span>) <span class="op">&lt;</span><span class="st"> </span><span class="fl">0.8</span>]), <span class="dv">0</span>)
+<span class="kw">hist</span>(obs_drawn)</code></pre></div>
+<p><img src="assignment3_files/figure-html/unnamed-chunk-12-1.png" width="700"></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mu100 &lt;-<span class="st"> </span><span class="kw">mean</span>(obs_drawn) <span class="co"># += 80</span>
+sd100&lt;-<span class="st"> </span><span class="kw">sqrt</span>(<span class="kw">var</span>(obs_drawn)) <span class="co"># +- 3.96</span>
+err100 &lt;-<span class="st"> </span><span class="kw">sqrt</span>(<span class="kw">var</span>(obs_drawn)) <span class="op">/</span><span class="st"> </span><span class="dv">80</span> <span class="co"># 5%</span></code></pre></div>
+<p>On average, this gives us the right number of observations. We expect the ‘error’ (measured above as the standard deviation divided by the expected sample size) to go down as the sample size <span class="math inline">\(n \to \infty\)</span>.</p>
+<p>In the <code><a href="../reference/permutation_test.html">permutation_test()</a></code> function, we can specify whether we want to sample this way using the <code>use_sample()</code> flag. As shown above, there is always a chance that we will draw a sample that is few in number of observations. To make sure that this does not happen, we impose the rule that the proportion of observations may not be above or below one standard error away from the proportion. If this happens, then the function calls itself recursively until the proportion is within acceptable bounds.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">888</span>)
+pt &lt;-<span class="st"> </span><span class="kw"><a href="../reference/permutation_test.html">permutation_test</a></span>(CSFI, TFI, <span class="dv">999</span>, <span class="dt">use_sample =</span> <span class="ot">FALSE</span>)
+pt</code></pre></div>
+<pre><code>## Two-tailed permutation test using 18 observations and 999 permutations
+## 
+## K    R   t       p
+## -----------------------------------
+## 18   999 1.68    0.142</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">888</span>)
+pt &lt;-<span class="st"> </span><span class="kw"><a href="../reference/permutation_test.html">permutation_test</a></span>(CSFI, TFI, <span class="dv">999</span>, <span class="dt">use_sample =</span> <span class="ot">TRUE</span>)
+pt</code></pre></div>
+<pre><code>## Two-tailed permutation test using 18 observations and 999 permutations
+## 
+## K    R   t       p
+## -----------------------------------
+## 18   999 1.68    0.148</code></pre>
+<p>We may observe different results using these different sampling procedures. This is because the group sizes may vary quite a bit.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1000</span>)
+<span class="kw"><a href="../reference/permutation_test.html">permutation_test</a></span>(CSFI, TFI, <span class="dv">999</span>, <span class="dt">use_sample =</span> <span class="ot">FALSE</span>)</code></pre></div>
+<pre><code>## Two-tailed permutation test using 18 observations and 999 permutations
+## 
+## K    R   t       p
+## -----------------------------------
+## 18   999 1.68    0.128</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1000</span>)
+<span class="kw"><a href="../reference/permutation_test.html">permutation_test</a></span>(CSFI, TFI, <span class="dv">999</span>, <span class="dt">use_sample =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<pre><code>## Two-tailed permutation test using 18 observations and 999 permutations
+## 
+## K    R   t       p
+## -----------------------------------
+## 18   999 1.68    0.124</code></pre>
+<p>This is a problem in the above situation because the results lead to different conclusions about statistical significance at <span class="math inline">\(\alpha=0.1\)</span>. To address this problem, we can change the <code>tolerance</code> parameter. This effectively reduces the standard error around the proportion when using <code>runif</code>. This increased stability comes at the expense of computational efficiency because we will have to sample more often to get the exact proportion.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1000</span>)
+<span class="kw"><a href="../reference/permutation_test.html">permutation_test</a></span>(CSFI, TFI, <span class="dv">999</span>, <span class="dt">use_sample =</span> <span class="ot">FALSE</span>, <span class="dt">tolerance =</span> <span class="fl">0.1</span>)</code></pre></div>
+<pre><code>## Two-tailed permutation test using 18 observations and 999 permutations
+## 
+## K    R   t       p
+## -----------------------------------
+## 18   999 1.68    0.112</code></pre>
+<p>The p-value of this function comes close to that of the <code>sample()</code> function, but does not equal it (even if the tolerance is set at <span class="math inline">\(0\)</span>).</p>
+<p>Another approach to sampling without using the <code>sample()</code> function is to draw values from the binomial distribution.</p>
+<ol start="2" style="list-style-type: decimal">
+<li><strong>Which resampling technique(s) would you use, if you would be interested in estimation instead of hypothesis testing? Make an R function that performs resampling for estimation purposes using the mean difference between two groups from the t-test function. Your function should produce all relevant aspects of estimation, and you should discuss these aspects and put them in perspective. Again use the Flight instruction data to show the results of your function.</strong></li>
+</ol>
+<p>View the code belonging to this assignment <a href="https://github.com/JasperHG90/meerkat/blob/master/R/a3_bootstrap.R">here</a></p>
+<p>I would use bootstrapping to do this. Using bootstrapping, we can draw <span class="math inline">\(R\)</span> samples with replacement from the original sample to construct an empirical sampling distribution. In this case, the quantity <span class="math inline">\(\theta\)</span> of interest is the t-statistic.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">4500</span>)
+res &lt;-<span class="st"> </span><span class="kw"><a href="../reference/boot_ttest.html">boot_ttest</a></span>(CSFI, TFI, <span class="dt">R=</span><span class="dv">2000</span>)
+res</code></pre></div>
+<pre><code>## 2000 bootstrapped two-tailed t-statistic values
+## 
+## Bootstrap statistics :
+##  original    bias        std.error   jack-after-boot
+##  1.68        0.22        1.22        0.42
+## 
+## Percentile bootstrap values :
+##  alpha       lower       upper
+##  0.05        -0.13       4.57</code></pre>
+<p>The <code><a href="../reference/boot_ttest.html">boot_ttest()</a></code> function gives us a variety of statistics. The ‘original’ t-statistic is the value we get when we calculate the t-statistic for the input values. The <strong>bias</strong> indicates that, on average, we are over-estimating the t-statistic. This we can also observe from the histogram below as it is skewed to the right.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(res)</code></pre></div>
+<p><img src="assignment3_files/figure-html/unnamed-chunk-19-1.png" width="700"></p>
+<p>The <strong>standard error</strong> is the standard deviation of the empirical sampling distribution. The <strong>jackknife-after-bootstrap</strong> estimate gives us an idea of the variability within the standard error statistic.</p>
+<p>Finally, the 95% confidence intervals give us the percentile CI for this sample (also shown in the plot above). The confidence intervals are close to those of the theoretical confidence intervals.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">t.test</span>(CSFI, TFI, <span class="dt">var.equal =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<pre><code>## 
+##  Two Sample t-test
+## 
+## data:  CSFI and TFI
+## t = 1.6805, df = 16, p-value = 0.1123
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -0.4967883  4.2967883
+## sample estimates:
+## mean of x mean of y 
+##       6.0       4.1</code></pre>
 </div>
 <div class="footnotes">
 <hr>
 <ol>
 <li id="fn1"><p>Rizzo, Maria L. “Statistical Computing with R”. Chapman and Hall/CRC, 2007<a href="#fnref1">↩</a></p></li>
+<li id="fn2"><p>Rizzo, p.218<a href="#fnref2">↩</a></p></li>
 </ol>
 </div>
   </div>

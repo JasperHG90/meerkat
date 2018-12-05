@@ -230,7 +230,7 @@ print.permutation_test <- function(object) {
   R <- object$data$R
 
   msg <- paste0("Two-tailed permutation test using ", K, " observations and ", R, " permutations", "\n\n",
-                "K\t", "R\t", "t\t", "p\n",
+                "K\t", "R\t", "t\t\t", "p\n",
                 "-----------------------------------\n",
                 K, "\t", R, "\t", round(t0, digits=2), "\t", round(p, digits=3))
 
