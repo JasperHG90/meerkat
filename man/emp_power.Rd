@@ -4,13 +4,15 @@
 \alias{emp_power}
 \title{Empirical power of a t-test}
 \usage{
-emp_power(n, mu, sd, alpha = 0.05, R = 1000, type = c("one_sample",
+emp_power(n, mu, mu0, sd, alpha = 0.05, R = 1000, type = c("one_sample",
   "two_sample"), ...)
 }
 \arguments{
 \item{n}{numeric. sample size}
 
 \item{mu}{mean value used to draw random normal samples. See ?rnorm() for more information}
+
+\item{mu0}{numeric. mean of control group if running a two-sample t-test or, if type = "one_sample", a value indicating the true value of the mean (or difference in means if you are performing a one sample test). See ?t.test() for more information}
 
 \item{sd}{standard deviation used to draw random normal samples}
 
@@ -22,9 +24,9 @@ emp_power(n, mu, sd, alpha = 0.05, R = 1000, type = c("one_sample",
 
 \item{...}{optional arguments. You may pass selected parameters from the t.test() function. You may also pass the following parameters:
 \itemize{
-  \item{mu0: numeric. mean of control group if running a two-sample t-test or, if type = "one_sample", a value indicating the true value of the mean (or difference in means if you are performing a one sample test). See ?t.test() for more information},
   \item{n0: numeric. sample size of control group if running a two-sample t-test. If not supplied then the function will use the value of n defined above.}
   \item{sd0: numeric. standard deviation of control group if running a two-sample t-test. If not supplied then the function will use the value of sd defined above.}
+  \item{alternative: a character string specifying the alternative hypothesis, must be one of "two.sided" (default), "greater" or "less". You can specify just the initial letter. See ?t.test() for more information}
 }
 Note that you are required to either pass all parameters related to the control group (n0, mu0, sd0) or a parameter related to the reference mean (ref_mu).}
 }
@@ -34,11 +36,12 @@ list containing:
   \item{inputs: }{list. user input values}
   \item{data: }{matrix. values of R samples of size n with mean mu and standard deviation sd drawn from a normal distribution using rnorm()}
   \item{p_values: }{vector. resulting p-values of R tests comparing the samples against the reference mean ref_mu}
-  \item{power: vector. power calculated by taking the proportion of p-values for which the value falls below or is equal to the significance level alpha}
+  \item{power: }{vector. power calculated by taking the proportion of p-values for which the value falls below or is equal to the significance level alpha}
+  \item{se :}{standard error of the power estimate. Calculated using the SE formula of a proportion. For more information, see the reference to Rizzo below.}
 }
 }
 \description{
-This function takes a reference mean value, sample size, mean, standard deviation, significance level and computes the empirical power of R randomly drawn normally distributed samples with mean mu, standard deviation sd and sample size n. It then calculates R t.tests with reference to the
+This function takes a reference mean value, sample size, mean, standard deviation, significance level and computes the empirical power of R randomly drawn normally distributed samples with mean mu, standard deviation sd and sample size n. The function can compute the power of one-sample t-tests and two-sample t-tests (variance is always assumed to be equal). This function will always return the data it generates internally because its focus is not on efficiency but rather reproducibility
 }
 \seealso{
 Rizzo, Maria L. 'Statistical Computing with R. Chapman and Hall/CRC, 2007'. (pp. 167-169)

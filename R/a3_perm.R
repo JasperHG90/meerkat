@@ -1,6 +1,6 @@
 # Functions for assignment 3, part II
 
-#' permutation t-test for inference
+#' Permutation t-test for inference
 #'
 #' This function computes the t-test on the inputs R times and samples the pooled data (i.e. x and y together) without replacement. The function calculates the p-value by
 #'
@@ -31,7 +31,7 @@ permutation_test <- function(x, y, R, use_sample = TRUE, ...) {
   if(!alternative %in% c("two.sided", "greater", "less")) {
     stop("'alternative' must be one of 'two.sided', 'greater' or 'less'. See ?t.test() for more information")
   }
-  variance_equal <- ifelse("var.equal" %in% names(opts), opts$var.equal, FALSE)
+  variance_equal <- ifelse("var.equal" %in% names(opts), opts$var.equal, TRUE)
   tolerance <- ifelse("tolerance" %in% names(opts), opts$tolerance, 1)
 
   # Preparation ----
