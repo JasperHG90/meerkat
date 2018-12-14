@@ -82,7 +82,7 @@
       <h1>Assignment 3</h1>
                         <h4 class="author">Jasper Ginn</h4>
             
-            <h4 class="date">2018-12-05</h4>
+            <h4 class="date">2018-12-14</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/JasperHG90/meerkat.git/blob/master/vignettes/assignment3.Rmd"><code>vignettes/assignment3.Rmd</code></a></small>
       <div class="hidden name"><code>assignment3.Rmd</code></div>
@@ -200,7 +200,11 @@ grids_out &lt;-<span class="st"> </span><span class="kw">vector</span>(<span cla
 <span class="kw"><a href="http://www.rdocumentation.org/packages/gridExtra/topics/arrangeGrob">grid.arrange</a></span>(grids_out[[<span class="dv">1</span>]], grids_out[[<span class="dv">2</span>]],
              grids_out[[<span class="dv">3</span>]], grids_out[[<span class="dv">4</span>]], 
              <span class="dt">ncol=</span><span class="dv">2</span>, <span class="dt">nrow=</span><span class="dv">2</span>)</code></pre></div>
-<p><img src="assignment3_files/figure-html/unnamed-chunk-2-1.png" width="700"></p>
+<div class="figure">
+<img src="assignment3_files/figure-html/unnamed-chunk-2-1.png" alt="Change in statistical power when all parameters are held constant except the one on the x-axis for each plot" width="700"><p class="caption">
+Change in statistical power when all parameters are held constant except the one on the x-axis for each plot
+</p>
+</div>
 <p>If we compare the results from the empirical test to the R function, we observe:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">power.t.test</span>(<span class="dt">n=</span><span class="dv">50</span>, <span class="dt">delta=</span><span class="dv">10</span>, <span class="dt">sd=</span><span class="dv">15</span>, <span class="dt">type=</span><span class="st">"two.sample"</span>, 
              <span class="dt">sig.level =</span> <span class="fl">0.05</span>, <span class="dt">alternative=</span><span class="st">"one.sided"</span>)</code></pre></div>
@@ -237,7 +241,7 @@ CSFI &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">2<
 TFI &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">7</span>,<span class="dv">7</span>,<span class="dv">8</span>)</code></pre></div>
 <p>If we assume that the variances are equal, we can apply a two-sample t-test using the permutation method.<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Run</span>
-<span class="kw">set.seed</span>(<span class="dv">1400</span>)
+<span class="kw">set.seed</span>(<span class="dv">1200</span>)
 pt &lt;-<span class="st"> </span><span class="kw"><a href="../reference/permutation_test.html">permutation_test</a></span>(CSFI, TFI, <span class="dv">999</span>)
 pt</code></pre></div>
 <pre><code>## Two-tailed permutation test using 18 observations and 999 permutations
@@ -247,18 +251,19 @@ pt</code></pre></div>
 ## 18   999 1.68    0.132</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(pt)</code></pre></div>
 <p><img src="assignment3_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">t.test</span>(CSFI, TFI)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">t.test</span>(CSFI, TFI, <span class="dt">var.equal =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <pre><code>## 
-##  Welch Two Sample t-test
+##  Two Sample t-test
 ## 
 ## data:  CSFI and TFI
-## t = 1.7161, df = 15.947, p-value = 0.1055
+## t = 1.6805, df = 16, p-value = 0.1123
 ## alternative hypothesis: true difference in means is not equal to 0
 ## 95 percent confidence interval:
-##  -0.4477771  4.2477771
+##  -0.4967883  4.2967883
 ## sample estimates:
 ## mean of x mean of y 
 ##       6.0       4.1</code></pre>
+<p>The results lead to the same conclusion, although the p-value obtained using the permutation test is 15% higher.</p>
 <ol start="2" style="list-style-type: decimal">
 <li><strong>How would you program the drawing of random samples when you do not want to use the sample() function? Modify the function you have programmed in (1) in such a way that it does not use the sample() function anymore. Run your new function and show that you can obtain the same results as in (1).</strong></li>
 </ol>
@@ -267,7 +272,7 @@ pt</code></pre></div>
 <span class="co"># This draws 5 values from a uniform with a=0 and b=1</span>
 <span class="kw">runif</span>(<span class="dv">5</span>)</code></pre></div>
 <pre><code>## [1] 0.30776611 0.25767250 0.55232243 0.05638315 0.46854928</code></pre>
-<p>If we wanted 80% of our rows randomly sampled, then we subset the probabilities generated by the uniform distribution such that they are below <span class="math inline">\(0.8\)</span>. This works because the uniform distribution is linear.</p>
+<p>If we wanted <span class="math inline">\(80\)</span>% of our rows randomly sampled, then we subset the probabilities generated by the uniform distribution such that they are below <span class="math inline">\(0.8\)</span>. This works because, we know that, if a random variable <span class="math inline">\(X\)</span> has a uniform density with <span class="math inline">\(a, b \in \mathbb{R} \implies P\left[X &lt; a + P(b - a)\right] = P\)</span>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Sample from the density from 0 to 1</span>
 <span class="kw">library</span>(ggplot2)
 <span class="kw">library</span>(gridExtra)
@@ -281,32 +286,24 @@ p3 &lt;-<span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyv
 <span class="st">  </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_hline</a></span>(<span class="dt">yintercept =</span> <span class="fl">0.75</span>, <span class="dt">col =</span> <span class="st">"red"</span>, <span class="dt">linetype =</span> <span class="dv">3</span>)
 <span class="kw"><a href="http://www.rdocumentation.org/packages/gridExtra/topics/arrangeGrob">grid.arrange</a></span>(p1, p2,p3, <span class="dt">ncol=</span><span class="dv">3</span>)</code></pre></div>
 <p><img src="assignment3_files/figure-html/unnamed-chunk-10-1.png" width="700"></p>
-<p>In the third plot above, we see that approximately 50% of the data lies below the median and 50% lies above it. Hence, if we wanted to sample 80% of our data, we would expect that proportion to be correct <em>on average</em> due to the randomness of the draws. We can demonstrate this as follows: sample 80% of the values of a sequence of numbers from 1 to 20 and take the length of this sequence</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">20</span>)
-obs_drawn &lt;-<span class="st"> </span><span class="kw">vapply</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">2000</span>, <span class="cf">function</span>(x) <span class="kw">length</span>(<span class="kw">seq</span>(<span class="dv">1</span>,<span class="dv">20</span>,<span class="dv">1</span>)[<span class="kw">runif</span>(<span class="dv">20</span>) <span class="op">&lt;</span><span class="st"> </span><span class="fl">0.8</span>]), <span class="dv">0</span>)
-<span class="kw">hist</span>(obs_drawn)</code></pre></div>
-<p><img src="assignment3_files/figure-html/unnamed-chunk-11-1.png" width="700"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mu20 &lt;-<span class="st"> </span><span class="kw">mean</span>(obs_drawn) <span class="co"># += 16</span>
-sd20&lt;-<span class="st"> </span><span class="kw">sqrt</span>(<span class="kw">var</span>(obs_drawn)) <span class="co"># +- 1.76</span>
-err &lt;-<span class="st"> </span><span class="kw">sqrt</span>(<span class="kw">var</span>(obs_drawn)) <span class="op">/</span><span class="st"> </span><span class="dv">16</span></code></pre></div>
-<p>So on average, we draw 16 observations with an sd of 1.76 or +- 11% error. We can do the same for 100 observations:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">40</span>)
-obs_drawn &lt;-<span class="st"> </span><span class="kw">vapply</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">2000</span>, <span class="cf">function</span>(x) <span class="kw">length</span>(<span class="kw">seq</span>(<span class="dv">1</span>,<span class="dv">100</span>,<span class="dv">1</span>)[<span class="kw">runif</span>(<span class="dv">100</span>) <span class="op">&lt;</span><span class="st"> </span><span class="fl">0.8</span>]), <span class="dv">0</span>)
-<span class="kw">hist</span>(obs_drawn)</code></pre></div>
-<p><img src="assignment3_files/figure-html/unnamed-chunk-12-1.png" width="700"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mu100 &lt;-<span class="st"> </span><span class="kw">mean</span>(obs_drawn) <span class="co"># += 80</span>
-sd100&lt;-<span class="st"> </span><span class="kw">sqrt</span>(<span class="kw">var</span>(obs_drawn)) <span class="co"># +- 3.96</span>
-err100 &lt;-<span class="st"> </span><span class="kw">sqrt</span>(<span class="kw">var</span>(obs_drawn)) <span class="op">/</span><span class="st"> </span><span class="dv">80</span> <span class="co"># 5%</span></code></pre></div>
-<p>On average, this gives us the right number of observations. We expect the ‘error’ (measured above as the standard deviation divided by the expected sample size) to go down as the sample size <span class="math inline">\(n \to \infty\)</span>.</p>
-<p>In the <code><a href="../reference/permutation_test.html">permutation_test()</a></code> function, we can specify whether we want to sample this way using the <code>use_sample()</code> flag. As shown above, there is always a chance that we will draw a sample that is few in number of observations. To make sure that this does not happen, we impose the rule that the proportion of observations may not be above or below one standard error away from the proportion. If this happens, then the function calls itself recursively until the proportion is within acceptable bounds.</p>
+<p>In the third plot above, we see that approximately 50% of the data lies below the median and 50% lies above it. Hence, if we wanted to sample 80% of our data, we would expect that proportion to be correct <em>on average</em> due to the randomness of the draws.</p>
+<p>In the <code><a href="../reference/permutation_test.html">permutation_test()</a></code> function, we can specify whether we want to sample this way using the <code>use_sample()</code> flag. As shown above, there is always a chance that we will draw a sample that is few in number of observations. To make sure that this does not happen, we impose the rule that the proportion of observations may not be above or below one standard error away from the proportion. If this happens, then the function calls itself recursively until the proportion is within acceptable bounds. The bounds may be increased or decreased using the <code>tolerance</code> parameter; the smaller this parameter is, the more we compress the ‘acceptable’ region around the proportion.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">888</span>)
-pt &lt;-<span class="st"> </span><span class="kw"><a href="../reference/permutation_test.html">permutation_test</a></span>(CSFI, TFI, <span class="dv">999</span>, <span class="dt">use_sample =</span> <span class="ot">FALSE</span>)
+pt &lt;-<span class="st"> </span><span class="kw"><a href="../reference/permutation_test.html">permutation_test</a></span>(CSFI, TFI, <span class="dv">999</span>, <span class="dt">use_sample =</span> <span class="ot">FALSE</span>, <span class="dt">tolerance =</span> <span class="dv">1</span>)
 pt</code></pre></div>
 <pre><code>## Two-tailed permutation test using 18 observations and 999 permutations
 ## 
 ## K    R   t       p
 ## -----------------------------------
 ## 18   999 1.68    0.142</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">888</span>)
+pt &lt;-<span class="st"> </span><span class="kw"><a href="../reference/permutation_test.html">permutation_test</a></span>(CSFI, TFI, <span class="dv">999</span>, <span class="dt">use_sample =</span> <span class="ot">FALSE</span>, <span class="dt">tolerance =</span> <span class="fl">0.5</span>)
+pt</code></pre></div>
+<pre><code>## Two-tailed permutation test using 18 observations and 999 permutations
+## 
+## K    R   t       p
+## -----------------------------------
+## 18   999 1.68    0.15</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">888</span>)
 pt &lt;-<span class="st"> </span><span class="kw"><a href="../reference/permutation_test.html">permutation_test</a></span>(CSFI, TFI, <span class="dv">999</span>, <span class="dt">use_sample =</span> <span class="ot">TRUE</span>)
 pt</code></pre></div>
@@ -315,30 +312,7 @@ pt</code></pre></div>
 ## K    R   t       p
 ## -----------------------------------
 ## 18   999 1.68    0.148</code></pre>
-<p>We may observe different results using these different sampling procedures. This is because the group sizes may vary quite a bit.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1000</span>)
-<span class="kw"><a href="../reference/permutation_test.html">permutation_test</a></span>(CSFI, TFI, <span class="dv">999</span>, <span class="dt">use_sample =</span> <span class="ot">FALSE</span>)</code></pre></div>
-<pre><code>## Two-tailed permutation test using 18 observations and 999 permutations
-## 
-## K    R   t       p
-## -----------------------------------
-## 18   999 1.68    0.128</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1000</span>)
-<span class="kw"><a href="../reference/permutation_test.html">permutation_test</a></span>(CSFI, TFI, <span class="dv">999</span>, <span class="dt">use_sample =</span> <span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## Two-tailed permutation test using 18 observations and 999 permutations
-## 
-## K    R   t       p
-## -----------------------------------
-## 18   999 1.68    0.124</code></pre>
-<p>This is a problem in the above situation because the results lead to different conclusions about statistical significance at <span class="math inline">\(\alpha=0.1\)</span>. To address this problem, we can change the <code>tolerance</code> parameter. This effectively reduces the standard error around the proportion when using <code>runif</code>. This increased stability comes at the expense of computational efficiency because we will have to sample more often to get the exact proportion.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1000</span>)
-<span class="kw"><a href="../reference/permutation_test.html">permutation_test</a></span>(CSFI, TFI, <span class="dv">999</span>, <span class="dt">use_sample =</span> <span class="ot">FALSE</span>, <span class="dt">tolerance =</span> <span class="fl">0.1</span>)</code></pre></div>
-<pre><code>## Two-tailed permutation test using 18 observations and 999 permutations
-## 
-## K    R   t       p
-## -----------------------------------
-## 18   999 1.68    0.112</code></pre>
-<p>The p-value of this function comes close to that of the <code>sample()</code> function, but does not equal it (even if the tolerance is set at <span class="math inline">\(0\)</span>).</p>
+<p>We may observe different results using these different sampling procedures. This is because the group sizes may vary quite a bit. Moreover, by decreasing the tolerance value, we are resampling many more times because we are discarding many samples. I am not entirely sure how this works with the <code>set.seed()</code> function, but testing shows that the results can vary quite a bit. Clearly, this is quite a roundabout way of trying to get rid of the <code>sample()</code> function.</p>
 <p>Another approach to sampling without using the <code>sample()</code> function is to draw values from the binomial distribution.</p>
 <ol start="2" style="list-style-type: decimal">
 <li><strong>Which resampling technique(s) would you use, if you would be interested in estimation instead of hypothesis testing? Make an R function that performs resampling for estimation purposes using the mean difference between two groups from the t-test function. Your function should produce all relevant aspects of estimation, and you should discuss these aspects and put them in perspective. Again use the Flight instruction data to show the results of your function.</strong></li>
@@ -357,11 +331,13 @@ res</code></pre></div>
 ## Percentile bootstrap values :
 ##  alpha       lower       upper
 ##  0.05        -0.13       4.57</code></pre>
-<p>The <code><a href="../reference/boot_ttest.html">boot_ttest()</a></code> function gives us a variety of statistics. The ‘original’ t-statistic is the value we get when we calculate the t-statistic for the input values. The <strong>bias</strong> indicates that, on average, we are over-estimating the t-statistic. This we can also observe from the histogram below as it is skewed to the right.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(res)</code></pre></div>
-<p><img src="assignment3_files/figure-html/unnamed-chunk-19-1.png" width="700"></p>
-<p>The <strong>standard error</strong> is the standard deviation of the empirical sampling distribution. The <strong>jackknife-after-bootstrap</strong> estimate gives us an idea of the variability within the standard error statistic.</p>
-<p>Finally, the 95% confidence intervals give us the percentile CI for this sample (also shown in the plot above). The confidence intervals are close to those of the theoretical confidence intervals.</p>
+<p>The <code><a href="../reference/boot_ttest.html">boot_ttest()</a></code> function returns a variety of statistics:</p>
+<ol style="list-style-type: decimal">
+<li>The ‘original’ t-statistic is the value we get when we calculate the t-statistic for the input values.</li>
+<li>The <strong>bias</strong> indicates that, on average, we are over-estimating the t-statistic. This we can also observe from the histogram below, which is skewed to the right.</li>
+<li>The standard error is the bootstrap estimate of the sampling distribution standard error. We assess its variability using the jackknife-after-bootstrap estimate (‘jack-after-boot’). We observe that that the variability is rather high.</li>
+<li>The simple percentile bootstrap values (indicated with green dotted lines in the plot below) contain <span class="math inline">\(0\)</span>, which strengthens the conclusion we reached earlier when we failed to reject <span class="math inline">\(H_0\)</span>. The confidence intervals are close to the confidence intervals to those of the theoretical confidence intervals.</li>
+</ol>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">t.test</span>(CSFI, TFI, <span class="dt">var.equal =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <pre><code>## 
 ##  Two Sample t-test
@@ -374,6 +350,13 @@ res</code></pre></div>
 ## sample estimates:
 ## mean of x mean of y 
 ##       6.0       4.1</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(res)</code></pre></div>
+<div class="figure">
+<img src="assignment3_files/figure-html/unnamed-chunk-16-1.png" alt="Bootstrap distribution of replicates. The red vertical line represents the original t-statistic. The green lines indicate the values of the confidence intervals." width="700"><p class="caption">
+Bootstrap distribution of replicates. The red vertical line represents the original t-statistic. The green lines indicate the values of the confidence intervals.
+</p>
+</div>
+<p>In summary, the above diagnostics show that there is a lot of uncertainty in our point estimate. This is not surprising, given that our sample size is very small.</p>
 </div>
 <div class="footnotes">
 <hr>
